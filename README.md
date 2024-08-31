@@ -1,2 +1,2 @@
 # Algorithm
-uploading code that algorithm coding test
+uploading code for algorithm coding test
