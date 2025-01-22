@@ -15,24 +15,21 @@
 n, m = map(int, input().split())
 array = list(map(int, input().split()))
 array.sort()
-# 가능하면 1 늘림 -> 
-# 안 되면 1 줄임
 
-# index를 사용하면 값을 모두 돌아볼 수 없음, 0에서부터 시작해 가장 큰 값의 '값'으로 접근해야 함
-def binary_search(array, m, start, end):
-    if start > end:
-        return None
+start = 0
+end = max(array)
+
+result = 0
+while(start <= end):
+    total = 0
     mid = (start + end) // 2
-    res = 0 
-    for v in array:
-        if v > mid:
-            res += (v - mid)
-    if res == m:
-        return mid
-    elif res > m:
-        return binary_search(array, m, mid+1, end)
+    for x in array:
+        if x > mid:
+            total += x - mid
+    if total < m:
+        end = mid - 1
     else:
-        return binary_search(array, m, start, mid-1)
-    
-h = binary_search(array, m, 0, array[-1])
-print(h)
+        result = mid
+        start = mid + 1
+        
+print(result)
