@@ -6,12 +6,13 @@ import sys
 input = sys.stdin.readline
 
 s = input()
-res = 1
+res = int(s[0])
 
-for i in range(0, len(s) - 1):
-    d = int(s[i])
-    if res == 0:
-        res += d
+for i in range(1, len(s) - 1):
+    num = int(s[i])
+    if num <= 1 or res <= 1:
+        res += num
     else:
-        res *= d
+        res *= num
+
 print(res)

@@ -32,3 +32,17 @@ for target in range(1, MAX):
     if target > 0:
         print(res)
         break
+    
+# 그리디 문제를 좀 더 많이 접해보자
+# 그리디: 현재 상태에서 매번 가장 좋아보이는 것만을 선택하는 알고리즘
+# 현재 확인하는 화폐의 단위가 target 이하여야 target을 만들 수 있음
+# 따라서 target보다 큰 화폐가 등장하면 해당 target값은 만들 수 없는 값임(1~target-1의 범위 값은 만들 수 있음)
+coin.sort()
+
+target = 1
+for x in coin:
+    if target < x:
+        break
+    target += x
+
+print(target)
