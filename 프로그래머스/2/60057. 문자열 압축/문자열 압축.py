@@ -1,17 +1,10 @@
 def solution(s):
     answer = 0
-    
-    
-    # 기능을 하나씩 구현해보자
-    # 문자를 1개씩 자르면
-    # print(len(s))
     min_s = len(s)
     
     for n in range(1, (len(s)) // 2 + 1):
-        # print(f'when n = {n}: ')
         len_s = len(s)
         cnt = dict()
-        # 이전에도 같은 값이었는지 판단
         pre = False
         now = False
 
@@ -34,8 +27,6 @@ def solution(s):
             else:
                 now = False
                 cnt[s[i-n : i]] = 1
-            # print(cnt)
-            
             pre = now
             
         if len_s < min_s:
