@@ -131,10 +131,150 @@
 
 # 정답 but 오래 걸림 -> dict() 사용하자
 
-# 백준 - Silver - 14425
 
+# 백준 - Silver - 1260
+# 그래프를 DFS, BFS 탐색 결과 출력
+
+# from collections import deque
+
+# def dfs(v):
+#     dfs_been[v] = 1
+#     print(v, end=' ')
+#     for next in graph[v]:
+#         # 하나씩 조회
+#         if dfs_been[next] == 0:
+#             dfs(next)
+#         else:
+#             continue
+
+# def bfs(v):
+#     bfs_been[v] = 1
+#     queue = deque()
+#     queue.append(v)
+#     while queue:
+#         now = queue.popleft()
+#         print(now, end=' ')
+#         for next in graph[now]:
+#             if bfs_been[next] == 0:
+#                 bfs_been[next] = 1
+#                 queue.append(next)
+#             else:
+#                 continue
+            
+
+# n, m, v = map(int, input().split()) # v는 시작점
+# graph = [[] for _ in range(n+1)]
+# for _ in range(m):
+#     a, b = map(int, input().split())
+#     graph[a].append(b)
+#     graph[b].append(a)
+
+# for i in range(n + 1):
+#     graph[i].sort()
+
+# dfs_been = [0] * (n+1)
+# bfs_been = [0] * (n+1)
+
+# dfs(v)
+# print()
+# bfs(v)
+
+
+# 백준 - Silver - 2606
+# 1번 컴퓨터가 웜 바이러스에 걸렸을 때, 웜 바이러스에 걸리는 컴퓨터 수 출력 - 연결 확인
+
+# from collections import deque
+
+# n = int(input())
+# m = int(input())
+# graph = [[] for _ in range(n+1)]
+# for _ in range(m):
+#     a, b = map(int, input().split())
+#     graph[a].append(b)
+#     graph[b].append(a)
+
+# been = [0] * (n + 1)
+# queue = deque()
+# queue.append(1)
+# been[1] = 1
+# cnt = 0
+# while queue:
+#     now = queue.popleft()
+#     for next in graph[now]:
+#         if been[next] == 0:
+#             been[next] = 1
+#             queue.append(next)
+#             cnt += 1
+#         else:
+#             continue
+# print(cnt)
+
+# 백준 - Silver - 2667
+
+# 1은 집이 있는 곳, 0은 집이 없는 곳
+# 연결된 집의 모임: 단지, 단지에 번호 붙이기
+# 단지수 , 각 단지에 속하는 집의 수 '오름차순' 출력
+
+
+# 재귀로 반복하면 당연히 '깊이' 우선으로 들어감
+# def dfs(x, y):
+#     if x <= -1 or x >= n or y <= -1 or y >= n:
+#         return False
+#     if graph[x][y] == 1:
+#         # print(x, y, graph[x][y])
+#         graph[x][y] = 0
+#         xy.append((x, y))
+#         dfs(x-1, y)
+#         dfs(x, y-1)
+#         dfs(x+1, y)
+#         dfs(x, y+1)
+#         return True
+#     return False
+
+# n = int(input())
+# graph = [list(map(int, input())) for _ in range(n)]
+# num = 0 # 단지의 개수
+# res = []
+# for i in range(n):
+#     for j in range(n):
+#         xy = []
+#         if dfs(i, j):
+#             res.append(len(xy))
+#             num += 1
+# res.sort()
+# print(num)
+# for x in res:
+#     print(x)
+
+
+# 백준 - Silver - 1012
+# 1이 모여있는 개수 구하기 - Recursion Error: stack으로 구현해보자
 import sys
-n, m = map(int, sys.stdin.readline().rstrip())
+sys.stdin.readline
 
-for _ in range(n):
-    sys.stdin.readline().rstrip()
+def dfs(i, j):
+    if i <= -1 or i >= m or j <= -1 or j >= n:
+        return False
+    if ground[i][j] == 1:
+        ground[i][j] = 0
+        dfs(i-1, j)
+        dfs(i, j-1)
+        dfs(i+1, j)
+        dfs(i, j+1)
+        return True
+    return False
+
+t = int(input())
+while t > 0:
+    m, n, k = map(int, input().split())
+    ground = [[0] * n for _ in range(m)]
+    for _ in range(k):
+        x, y = map(int, input().split())
+        ground[x][y] = 1
+    cnt = 0
+    for i in range(m):
+        for j in range(n):
+            if dfs(i, j):
+                cnt += 1
+    print(cnt)
+    t -= 1
