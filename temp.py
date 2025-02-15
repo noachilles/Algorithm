@@ -791,3 +791,112 @@
 #     print(-1)
 # else:
 #     print(d[m])
+
+
+# BOJ - Silver - 1920
+# 정수 범위가 -2^31 ~ 2^31로 매우 크다
+# 따라서, 계수정렬로 풀 수 없다
+
+# import sys
+# input = sys.stdin.readline
+
+# def binary_search(start, end, target, array):
+#     while(start <= end):
+#         mid = (start + end) // 2
+#         if target == array[mid]:
+#             return mid
+#         elif target < array[mid]:
+#             end = mid - 1
+#         else:
+#             start = mid + 1
+#     return -1
+
+# n = int(input())
+# a = list(map(int, input().rstrip().split()))
+# m = int(input())
+# b = list(map(int, input().rstrip().split()))
+
+# a.sort()
+
+# for target in b:
+#     res = binary_search(0, n-1, target, a)
+#     if res == -1:
+#         print(0)
+#     else:
+#         print(1)
+
+
+# BOJ - Silver - 10814
+# 나이와 이름이 가입한 순서대로
+# 나이 오름차순, 나이 같으면 먼저 가입한 사람이 앞에
+
+# n = int(input())
+# array = []
+# for i in range(n):
+#     input_data = input().split()
+#     array.append((int(input_data[0]), input_data[1], i))
+
+# array.sort(key=lambda member: (member[0], member[2]))
+# for member in array:
+#     print(member[0], member[1])
+
+
+# BOJ - Silver - 10816
+# b에 적힌 숫자 카드의 개수 구하기
+# 값이 크기 때문에 사용할 수 없는 것: 계수 정렬
+# -> 이진 탐색을 사용해야 할 것 같은데, 어떻게 하면 좋을까
+# 일단 결과가 담길 list를 전부 0으로 초기화
+# set에 값을 담아서 있는지 여부를 확인하고, 없는 값들은 찾지 않고 있는 값들만 계산하면 안 되나..
+# import sys
+# input = sys.stdin.readline
+
+# def binary_search(start, end, target, array):
+#     while(start <= end):
+#         mid = (start + end) // 2
+#         if target == array[mid][0]:
+#             return array[mid][1]
+#         elif target < array[mid][0]:
+#             end = mid - 1
+#         else:
+#             start = mid + 1
+#     return 0
+
+# n = int(input())
+# a = list(map(int, input().rstrip().split()))
+# m = int(input())
+# b = list(map(int, input().rstrip().split()))
+
+# a.sort()
+# s = set(a)
+# res = [0] * m # 결과
+
+# array = []
+# cnt = 1
+# for i in range(0, n-1): # O(N)
+#     if a[i] != a[i+1]: # 다음 값과 다르다면
+#         k = a[i]
+#         array.append((a[i], cnt))
+#         cnt = 1
+#     else: # 다음 값과 같다면
+#         cnt += 1
+# array.append((a[-1], cnt))
+
+# for i in range(m):
+#     res[i] = binary_search(0, len(array) - 1, b[i], array)
+
+# for item in res:
+#     print(item, end=' ')
+    
+# 코드 분석
+# import sys
+# from collections import Counter
+# input = sys.stdin.readline
+
+# n = int(input())
+# a = list(map(int, input().rstrip().split()))
+# m = int(input())
+# b = list(map(int, input().rstrip().split()))
+
+# cnt_dict = Counter(a)
+# for target in b:
+#     print(cnt_dict[target], end=' ')
