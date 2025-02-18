@@ -900,3 +900,397 @@
 # cnt_dict = Counter(a)
 # for target in b:
 #     print(cnt_dict[target], end=' ')
+
+
+# BOJ - Silver - 1463
+# 시간제한 0.15초
+# x가 3으로 나누어 떨어지면 3으로 나눔
+# 2로 나누어 떨어지면 2로 나눔
+# 1을 뺀다
+# n = int(input())
+# d = [10**6] * (n+1)
+# d[0] = 0
+# d[1] = 0
+# for x in range(2, n+1):
+#     if x % 6 == 0:
+#         d[x] = min(d[x//3] + 1, d[x//2] + 1)
+#     elif x % 3 == 0:
+#         d[x] = min(d[x//3] + 1, d[x-1] + 1)
+#     elif x % 2 == 0:
+#         d[x] = min(d[x//2] + 1, d[x-1] + 1)
+#     else:
+#         d[x] = d[x-1] + 1
+# print(d[n])
+
+
+# BOJ - Silver - 9095
+# d = {1:1, 2:2, 3:4}
+# def f(x):
+#     if x in d:
+#         return d[x]
+#     else:
+#         d[x] = f(x-1) + f(x-2) + f(x-3)
+#     return d[x]
+
+# if __name__ == "__main__":
+#     t = int(input())
+#     while t:
+#         n = int(input())
+#         print(f(n))
+#         t -= 1
+
+
+# BOJ - Silver - 2941
+# import sys
+# input = sys.stdin.readline
+
+# s = input().rstrip()
+
+# def chk(s): # dz, z 제외 크로아티아 알파벳 찾고 개수 세기
+#     cnt = 0
+#     for i in range(len(s)-1):
+#         if s[i:i+2] == None:
+#             break
+#         elif s[i:i+2] in d:
+#             cnt += 1
+#             visited.append(i)
+#             visited.append(i+1)
+#     return cnt
+
+# def chk_dz(s): # dz 찾고 개수 세기
+#     cnt = 0
+#     for i in range(len(s)-2):
+#         if s[i:i+3] == None:
+#             break
+#         elif s[i:i+3] == 'dz=':
+#             cnt += 1
+#             visited.append(i)
+#             visited.append(i+1)
+#             visited.append(i+2)
+#     return cnt
+
+# def chk_z(s): 
+#     cnt = 0
+#     for i in range(len(s)-1):
+#         temp = set(visited)
+#         if i not in temp:
+#             if s[i:i+2] == None:
+#                 break
+#             elif s[i:i+2] == 'z=':
+#                 visited.append(i)
+#                 visited.append(i+1)
+#                 cnt += 1
+#     return cnt
+
+# def chk_else(s):
+#     cnt = 0
+#     for i in range(len(s)):
+#         if not i in visited:
+#             cnt += 1
+#     return cnt
+
+# if __name__ == '__main__':
+#     cnt = 0
+#     d = {'c=':0, 'c-':0, 'd-':0, 'lj':0, 'nj': 0, 's=':0}
+#     visited = []
+#     cnt += chk(s)
+#     cnt += chk_dz(s)
+#     cnt += chk_z(s)
+#     visited = set(visited)
+#     cnt += chk_else(s)    
+#     print(cnt)
+    
+    
+# BOJ - Silver - 4673
+# def d(n):
+#     if n > 9999:
+#         l = 5
+#     elif n > 999:
+#         l = 4
+#     elif n > 99:
+#         l = 3
+#     elif n > 9:
+#         l = 2
+#     else:
+#         l = 1
+#     res = n
+#     while l > 0:
+#         k = (10 ** (l-1))
+#         res += (n // k)
+#         n %= k
+#         # print(l, res)
+#         l -= 1
+#     return res
+
+# ref = dict()
+# for x in range(1, 10001):
+#     if d(x) < 10001:
+#         ref[d(x)] = 0
+# for x in range(1, 10001):
+#     if not x in ref:
+#         print(x)
+
+
+# 이코테 - PART2 - 최단 경로
+# import sys
+# input = sys.stdin.readline
+# INF = int(1e9)
+
+# # 노드 개수, 간선 개수 입력 받기
+# n, m = map(int, input().split())
+# start = int(input())
+# # 각 노드에 연결된 노드에 대한 정보 담는 리스트
+# graph = [[] for i in range(n+1)]
+# visited = [False] * (n+1)
+# distance = [INF] * (n+1)
+
+# # 모든 간선 정보를 입력 받기 - 연결된 노드와 거리
+# for _ in range(m):
+#     a, b, c = map(int, input().split())
+#     graph[a].append((b, c))
+
+# # 방문하지 않은 노드 중에서, 가장 최단 거리가 짧은 노드 번호 반환
+# def get_nearest_node():
+#     min_value = INF
+#     index = 0 # 가장 최단 거리가 짧은 노드
+#     for i in range(1, n+1):
+#         if distance[i] < min_value and not visited[i]:
+#             min_value = distance[i]
+#             index = i
+#     return index
+
+# def dijkstra(start):
+#     # 시작 노드에 대해 초기화
+#     distance[start] = 0
+#     visited[start] = True
+#     # 시작 노드와 연결된 노드 j에 대해
+#     for j in graph[start]:
+#         # 거리를 갱신
+#         distance[j[0]] = j[1]
+#     # 시작 노드 제외한 전체 n-1 노드에 대해 반복
+#     for i in range(n-1):
+#         now = get_nearest_node()
+#         visited[now] = True
+#         for j in graph[now]:
+#             cost = distance[now] + j[1]
+#             # 현재 노드를 거쳐서 가는 거리가 더 짧은 경우
+#             if cost < distance[j[0]]:
+#                 distance[j[0]] = cost
+# dijkstra(start)
+# for i in range(1, n+1):
+#     print(distance[i])
+
+# 개선된 다익스트라
+# import heapq
+# import sys
+# input = sys.stdin.readline
+# INF = int(1e9)
+
+# n, m = map(int, input().split())
+# start = int(input())
+
+# graph = [[] for _ in range(n+1)]
+# distance = [INF] * (n+1)
+# visited = [False] * (n+1)
+
+# for _ in range(m):
+#     a, b, c = map(int, input().split())
+#     graph[a].append((b, c))
+
+# def dijkstra(start):
+#     q = []
+#     # 시작 노드로 가기 위한 최단 경로는 0으로 설정해 큐에 삽입 
+#     heapq.heappush(q, (0, start))
+#     distance[start] = 0
+#     while q: # 큐가 비어있지 않다면
+#         # 가장 최단 거리가 짧은 노드에 대한 정보 꺼내기
+#         dist, now = heapq.heappop(q)
+#         # 현재 노드가 이미 처리된 적이 있으면 무시
+#         if visited[now] == True:
+#             continue
+#         # 현재 노드와 연결된 다른 인접 노드 확인
+#         for i in graph[now]:
+#             cost = dist + i[1]
+#             if cost < distance[i[0]]:
+#                 distance[i[0]] = cost
+#                 heapq.heappush(q, (cost, i[0]))
+        
+# dijkstra(start)
+# for i in range(n+1):
+#     print(distance[i])
+
+# # 플로이드 워셜
+# n = int(input())
+# INF = int(1e9)
+# graph = [[INF] * (n+1) for _ in range(n+1)]
+# # 자신까지의 거리는 0으로 초기화
+# for i in range(1, n+1):
+#     for j in range(1, n+1):
+#         if i == j:
+#             graph[i][j] = 0
+
+# m = int(input())
+# # 거리 정보
+# for _ in range(m):
+#     a, b, c = map(int, input().split())
+#     graph[a][b] = c
+
+# for k in range(n+1):
+#     for a in range(n+1):
+#         for b in range(n+1):
+#             if k == a or k == b or a == b: # 이건 생략 가능
+#                 continue
+#             graph[a][b] = min(graph[a][b], graph[a][k] + graph[k][b])
+
+# for i in range(1, n+1):
+#     for j in range(1, n+1):
+#         if graph[i][j] == INF:
+#             print('INF', end=' ')
+#         else:
+#             print(graph[i][j], end=' ')
+#     print()
+
+# 이코테 - PART2 - 최단경로
+# 1애서 출발, K를 거쳐 X로 가는 최단 경로
+# 플로이드워셜은 O(N^3)인데 N이 최대 100이므로 100^3 = 1,000,000이라 O
+# import sys
+# input = sys.stdin.readline
+# n, m = map(int, input().split())
+# INF = int(1e9)
+# graph = [[INF] * (n+1) for _ in range(n+1)]
+
+# for i in range(1, n+1):
+#     for j in range(1, n+1):
+#         if i == j:
+#             graph[i][j] = 0
+
+# for _ in range(m):
+#     a, b = map(int, input().split())
+#     graph[a][b] = 1
+#     graph[b][a] = 1
+
+# x, k = map(int, input().split())
+
+# for c in range(1, n+1):
+#     for a in range(1, n+1):
+#         for b in range(1, n+1):
+#             graph[a][b] = min(graph[a][b], graph[a][c] + graph[c][b])
+            
+# res = graph[1][k] + graph[k][x]
+# if res >= INF:
+#     print(-1)
+# else:
+#     print(res)
+
+# 이코테 - PART2 - 최단경로
+# 범위가 커서 플로이드 워셜 쓸 수 X
+# 도시에서 일방적으로 연결되어 있는 도시 총 몇 개?
+# 그것들 중 가장 긴 시간이 걸리는 것 -> 다익스트라로 구하기
+# import sys
+# import heapq
+# input = sys.stdin.readline
+# INF = int(1e9)
+# n, m, c = map(int, input().split())
+# graph = [[] for _ in range(n+1)]
+# distance = [INF] * (n+1)
+# visited = [False] * (n+1)
+# for _ in range(m):
+#     x, y, z = map(int, input().split())
+#     graph[x].append((y, z)) # 도시, 거리
+    
+# q = []
+# def dijkstra(start):
+#     heapq.heappush(q, (0, start))
+#     visited[start] = True
+#     distance[start] = 0
+#     cnt = 0
+#     t = 0
+#     while q: # q에 값이 있을 동안
+#         dist, now = heapq.heappop(q)
+#         for i in graph[now]: # 연결된 다른 (도시, 거리)들에 대해
+#             # 기존보다 거리가 더 짧으면 갱신
+#             if visited[i[0]] == True:
+#                 continue
+#             cost = dist + i[1]
+#             if cost < distance[i[0]]: # 도시
+#                 distance[i[0]] = cost
+#                 if t < cost:
+#                     t = cost
+#                 cnt += 1
+#             heapq.heappush(q, (i[1], i[0]))
+#     return cnt, t
+
+# cnt, t = dijkstra(c)
+# print(cnt, t, end=' ')
+
+# 이코테 - PART2 - 그래프 이론
+# import sys
+# input = sys.stdin.readline
+
+# def find_parent(parent, x):
+#     if parent[x] != x:
+#         parent[x] = find_parent(parent, parent[x])
+#     return parent[x]
+
+# def union_parent(parent, a, b):
+#     a = find_parent(parent, a)
+#     b = find_parent(parent, b)
+#     if a < b:
+#         parent[b] = a
+#     else:
+#         parent[a] = b
+
+# v, e = map(int, input().split())
+# parent = [0] * (v + 1)
+
+# for i in range(1, v+1):
+#     parent[i] = i
+
+# for i in range(e):
+#     a, b = map(int, input().split())
+#     union_parent(parent, a, b)
+    
+# print('각 원소가 속한 집합: ', end=' ')
+# for i in range(1, v+1):
+#     print(find_parent(parent, i), end=' ')
+
+# print()
+
+# print('부모 테이블: ', end=' ')
+# for i in range(1, v+1):
+#     print(parent[i], end=' ')
+
+# # 최소 신장 트리 - 크루스칼
+# def find_parent(parent, x):
+#     if parent[x] != x:
+#         parent[x] = find_parent(parent, parent[x])
+#     return parent[x]
+
+# def union_parent(parent, a, b):
+#     a = find_parent(parent, a)
+#     b = find_parent(parent, b)
+#     if a < b:
+#         parent[b] = a
+#     else:
+#         parent[a] = b
+
+# v, e = map(int, input().split())
+# edges = []
+# parent = [0] * (v+1)
+# res = 0
+
+# for i in range(1, v+1):
+#     parent[i] = i
+
+# for _ in range(e):
+#     a, b, cost = map(int, input().split())
+#     edges.append((cost, a, b))
+    
+# edges.sort()
+
+# for edge in edges:
+#     cost, a, b = edge
+#     if find_parent(parent, a) != find_parent(parent, b):
+#         union_parent(parent, a, b)
+#         res += cost
+# print(res)
