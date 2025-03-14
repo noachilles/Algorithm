@@ -109,75 +109,314 @@
 
 # BOJ - Gold - 14502
 # 연구소 각 칸에 대해 3개의 1을 만들고 안전영역을 구함
-import sys
-import copy
-input = sys.stdin.readline
+# import sys
+# import copy
+# input = sys.stdin.readline
 
-n, m = map(int, input().split())
-graph = [[] for _ in range(n)]
-temp = [[0] * m for _ in range(n)]
-result = cnt = 0
-v = []
+# n, m = map(int, input().split())
+# graph = [[] for _ in range(n)]
+# temp = [[0] * m for _ in range(n)]
+# result = cnt = 0
+# v = []
 
-for i in range(n):
-    data = list(input().rstrip().split())
-    for x in data:
-        graph[i].append(int(x))
+# for i in range(n):
+#     data = list(input().rstrip().split())
+#     for x in data:
+#         graph[i].append(int(x))
         
-for i in range(n):
-    for j in range(m):
-        if graph[i][j] == 0:
-            cnt += 1
-        elif graph[i][j] == 2:
-            v.append((i, j))
+# for i in range(n):
+#     for j in range(m):
+#         if graph[i][j] == 0:
+#             cnt += 1
+#         elif graph[i][j] == 2:
+#             v.append((i, j))
 
-# virus가 퍼진다
-dx = [1, -1, 0, 0]
-dy = [0, 0, 1, -1]
-def virus(x, y, temp):
-    for i in range(4):
-        nx = x + dx[i]
-        ny = y + dy[i]
-        if 0 <= nx < n and 0 <= ny < m:
-            if temp[nx][ny] == 0:
-                temp[nx][ny] = 2
-                virus(nx, ny, temp)
-    return
+# # virus가 퍼진다
+# dx = [1, -1, 0, 0]
+# dy = [0, 0, 1, -1]
+# def virus(x, y, temp):
+#     for i in range(4):
+#         nx = x + dx[i]
+#         ny = y + dy[i]
+#         if 0 <= nx < n and 0 <= ny < m:
+#             if temp[nx][ny] == 0:
+#                 temp[nx][ny] = 2
+#                 virus(nx, ny, temp)
+#     return
 
-def get_score(temp): # 안전영역의 개수를 구한다
-    score = 0
-    for i in range(n):
-        for j in range(m):
-            if temp[i][j] == 0:
-                score += 1
-    return score
+# def get_score(temp): # 안전영역의 개수를 구한다
+#     score = 0
+#     for i in range(n):
+#         for j in range(m):
+#             if temp[i][j] == 0:
+#                 score += 1
+#     return score
 
-def make_wall(): # 벽을 만든다
-    global cnt
-    global result
-    cnt_temp = cnt - 3
-    for i in range(0, n*m):
-        for j in range(i+1, n*m):
-            for k in range(j+1, n*m):
-                x1 = i // m
-                y1 = i % m
+# def make_wall(): # 벽을 만든다
+#     global cnt
+#     global result
+#     cnt_temp = cnt - 3
+#     for i in range(0, n*m):
+#         for j in range(i+1, n*m):
+#             for k in range(j+1, n*m):
+#                 x1 = i // m
+#                 y1 = i % m
                 
-                x2 = j // m
-                y2 = j % m
+#                 x2 = j // m
+#                 y2 = j % m
                 
-                x3 = k // m
-                y3 = k % m
+#                 x3 = k // m
+#                 y3 = k % m
                 
-                if graph[x1][y1] == 0 and graph[x2][y2] == 0 and graph[x3][y3] == 0:
+#                 if graph[x1][y1] == 0 and graph[x2][y2] == 0 and graph[x3][y3] == 0:
                     
-                    temp = copy.deepcopy(graph)
-                    temp[x1][y1] = 1
-                    temp[x2][y2] = 1
-                    temp[x3][y3] = 1
+#                     temp = copy.deepcopy(graph)
+#                     temp[x1][y1] = 1
+#                     temp[x2][y2] = 1
+#                     temp[x3][y3] = 1
                     
-                    for dot in v:
-                        virus(dot[0], dot[1], temp)
-                    result = max(result, get_score(temp))
-    return result
+#                     for dot in v:
+#                         virus(dot[0], dot[1], temp)
+#                     result = max(result, get_score(temp))
+#     return result
                 
-print(make_wall())
+# print(make_wall())
+
+# BOJ - Gold - 18405
+# from collections import deque
+# n, k = map(int, input().split())
+# # graph 범위가 n+1 * n+1 이므로 x, y 그대로 사용할 수 있음
+# graph = [[0] * (n+1) for _ in range(n+1)]
+# virus = [[] for _ in range(k+1)]
+# for i in range(1, n+1):
+#     graph[i] = [0] + (list(map(int, input().split())))
+
+# s, x, y = map(int, input().split())
+
+# for i in range(1, n+1):
+#     for j in range(1, n+1):
+#         if graph[i][j] > 0:
+#             virus[graph[i][j]].append((i, j))
+
+# dx = [1, -1, 0, 0]
+# dy = [0, 0, 1, -1]
+# def spread():
+#     cnt = 0
+#     for v in range(1, k+1):
+#         queue = deque(virus[v])
+#         for _ in range(len(queue)):
+#             x, y = queue.popleft()
+#             for i in range(4):
+#                 nx = x + dx[i]
+#                 ny = y + dy[i]
+#                 if 1 <= nx <= n and 1 <= ny <= n:
+#                     if graph[nx][ny] == 0:
+#                         graph[nx][ny] = v
+#                         queue.append((nx, ny))
+#         virus[v] = list(queue)
+#         if queue == 0:
+#             cnt += 1
+#     if cnt >= k:
+#         return True
+
+# for i in range(s):
+#     if spread():
+#         break
+# print(graph[x][y])
+
+# BOJ - Silver - 14888
+# n = int(input())
+# data = list(map(int, input().split()))
+# # +, -, *, // 
+# add, sub, mul, div = map(int, input().split())
+
+# max_value = -1e9 - 1
+# min_value = 1e9 + 1
+
+# def dfs(i, now):
+#     global max_value, min_value, add, sub, mul, div
+#     if i == n:
+#         min_value = min(min_value, now)
+#         max_value = max(max_value, now)
+#     else:
+#         if add > 0:
+#             add -= 1
+#             dfs(i + 1, now + data[i])
+#             add += 1
+#         if sub > 0:
+#             sub -= 1
+#             dfs(i + 1, now - data[i])
+#             sub += 1
+#         if mul > 0:
+#             mul -= 1
+#             dfs(i + 1, now * data[i])
+#             mul += 1
+#         if div > 0:
+#             div -= 1
+#             dfs(i + 1, int(now / data[i]))
+#             div += 1
+
+# dfs(1, data[0])
+
+# print(max_value)
+# print(min_value)
+
+# BOJ - Gold - 16234
+# from collections import deque
+# import sys
+# sys.setrecursionlimit(10**9)
+
+# N, L, R = map(int, input().split()) # 땅의 범위, 최소, 최대
+# A = [list(map(int, input().split())) for _ in range(N)]
+# B = [[0] * N for _ in range(N)]
+# V = [[0] * N for _ in range(N)]
+
+# dx = [1, -1, 0, 0]
+# dy = [0, 0, 1, -1]
+# def open(a, b): # 문을 여는 작업
+#     q = deque()
+#     chk = False
+#     q.append((a, b))
+#     while q:
+#         x, y = q.popleft()
+#         if V[x][y] == 0:
+#             V[x][y] = 1
+#             for i in range(4):
+#                 nx, ny = x + dx[i], y + dy[i]
+#                 if 0 <= nx < N and 0 <= ny < N:
+#                     if L <= abs(A[x][y] - A[nx][ny]) <= R and V[nx][ny] == 0:
+#                         B[x][y] = 1
+#                         B[nx][ny] = 1
+#                         chk = True
+#                         q.append((nx, ny))
+#     return chk
+
+# def bfs(a, b): # 인구 계산, 재정의
+#     s = 0
+#     c = 0
+#     q = deque()
+#     stack = []
+#     q.append((a, b))
+#     stack.append((a, b))
+#     while q:
+#         x, y = q.popleft()
+#         if B[x][y] == 1:
+#             B[x][y] = 0
+#             s += A[x][y]
+#             c += 1
+#             for i in range(4):
+#                 nx, ny = x + dx[i], y + dy[i]
+#                 if 0 <= nx < N and 0 <= ny < N:
+#                     if B[nx][ny] == 1 and V[nx][ny] == 1:
+#                         q.append((nx, ny))
+#                         stack.append((nx, ny))
+#     if c == 0:
+#         return 
+#     for t in stack:
+#         x, y = t
+#         A[x][y] = int(s / c)
+
+# res = 0
+# while True:
+#     end = True # 변화가 없다면 True
+#     for i in range(N):
+#         for j in range(N):
+#             if V[i][j] == 0:
+#                 temp = open(i, j)
+#                 if temp: # 변화가 있다면 -> False
+#                     end = False
+#                     bfs(i, j)
+#     if end:
+#         break
+#     V = [[0] * N for _ in range(N)]
+#     res += 1
+# print(res)
+
+# BOJ - Silver - 2178
+# 이런 건 최단 경로로 풀어야하나?
+
+# from collections import deque
+# n, m = map(int, input().split())
+# maze = [] 
+# # 최소 칸 수
+# res = [[0] * m for _ in range(n)]
+# for _ in range(n):
+#     data = list(map(int, input()))
+#     maze.append(data)
+
+# dx = [0, 0, -1, 1]
+# dy = [-1, 1, 0, 0]
+
+# def bfs():
+#     q = deque()
+#     q.append((0, 0))
+#     res[0][0] = 1
+#     while q:
+#         x, y = q.popleft()
+#         maze[x][y] = 0
+#         for i in range(4):
+#             nx = x + dx[i]
+#             ny = y + dy[i]
+#             if 0 <= nx < n and 0 <= ny < m:
+#                 if maze[nx][ny] == 1:
+#                     if res[nx][ny] > 0:
+#                         res[nx][ny] = min(res[nx][ny], res[x][y] + 1)
+#                     else:
+#                         res[nx][ny] = res[x][y] + 1
+#                     q.append((nx, ny))
+#                     maze[nx][ny] = 0
+                    
+# bfs()
+# print(res[n-1][m-1])
+
+# BOJ - Silver - 1697
+
+# 1을 더하거나 / 1을 빼거나 / 2를 곱하거나
+# from collections import deque
+# n, k = map(int, input().split())
+# MAX = 100001
+# d = [0] * MAX
+
+
+# def bfs():
+#     q = deque()
+#     q.append((n, 0))
+#     while q:
+#         x, count = q.popleft()
+#         # d[x] = count
+#         if x == k:
+#             return count
+#         for next in (x-1, x+1, x*2):
+#             if 0 <= next < MAX and d[next] == 0:
+#                 q.append((next, count+1))
+#                 d[next] = 1
+            
+
+# print(bfs())
+
+# BOJ - Silver - 5014
+# 총 F층, 스타트링크는 G층, 지금은 S층
+# from collections import deque
+# F, S, G, U, D = map(int, input().split())
+
+# visited = [0] * (F+1)
+
+# def bfs():
+#     global F, S, G, U, D
+#     q = deque()
+#     q.append((S, 0))
+#     while q:
+#         x, cnt = q.popleft()
+#         if x == G: # 도착하면 return
+#             return cnt
+#         for next in (x + U, x - D):
+#             if 0 < next <= F and visited[next] == 0:
+#                 q.append((next, cnt+1))
+#                 visited[next] = 1
+#     return -1
+
+# res = bfs()
+# if res >= 0:
+#     print(res)
+# else:
+#     print("use the stairs")
