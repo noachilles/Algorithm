@@ -93,3 +93,45 @@ rotate_90(sy, sx, length)
 # for i in range(len(arr)):
 #     print(arr[i])
 
+# Pre-Course 배열 돌리기
+from collections import deque
+
+N, M, R = 3, 3, 1
+
+arr = [[1, 2, 3],
+       [4, 5, 6],
+       [7, 8, 9]]
+
+answer = []
+for n in range(N):
+    answer.append(arr[n])
+        
+
+deq = deque()
+loops = min(N, M) // 2
+for i in range(loops):
+    # 1차원 배열로 변환
+    # 각 껍질별로 나누어 작업하기 위해 배열의 행과 열인 N, M 중 짝수인 쪽의 절반만큼 for문을 반복
+    # 각 껍질은 네 부분(위, 오른, 아래, 왼)으로 분할해 시계 방향으로 각각 deque에 연결해가며 1차원 배열로 변환
+    deq.clear()
+    deq.extend(arr[i][i:M-i])
+    deq.extend([row[M-i-1] for row in arr[i+1:N-i-1]])
+    deq.extend(arr[N-i-1][i:M-i][::-1])
+    deq.extend([row[i] for row in arr[i+1:N-i-1]][::-1])
+    # 회전
+    deq.rotate(R)
+    
+    # 다시 2차원 배열로 변환
+    for j in range(i, M-i): # 위쪽
+        answer[i][j] = deq.popleft()
+    for j in range(i+1, N-i-1): # 오른쪽
+        answer[j][M-i-1] = deq.popleft()
+    for j in range(M-i-1, i-1, -1): # 아래쪽
+        answer[N-i-1][j] = deq.popleft()
+    for j in range(N-i-2, i, -1): # 왼쪽
+        answer[j][i] = deq.popleft()
+    
+for n in range(N):
+    for m in range(M):
+        print(answer[n][m], end=' ')
+    print()

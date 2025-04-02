@@ -2134,69 +2134,1275 @@
 # 주사위 세로 가로, hor의 1을 바닥면으로 본다
 # 또한 ver의 i=3 값이 결과이다.
 
-def roll_dice(ver, hor, d):
-    # 주사위의 방향 d 에 따라 hor, ver 업데이트
-    n_ver = ver
-    n_hor = hor
-    if d == 0: # 동쪽
-        n_hor = ver[3:] + hor[:2]
-        n_ver = ver[:1] + hor[:1] + ver[2:3] + hor[2:]
+# def roll_dice(ver, hor, d):
+#     # 주사위의 방향 d 에 따라 hor, ver 업데이트
+#     n_ver = ver
+#     n_hor = hor
+#     if d == 0: # 동쪽
+#         n_hor = ver[3:] + hor[:2]
+#         n_ver = ver[:1] + hor[:1] + ver[2:3] + hor[2:]
 
-    elif d == 1: # 서쪽
-        n_hor = hor[1:] + ver[3:]
-        n_ver = ver[:1] + hor[2:] + ver[2:3] + hor[:1]
+#     elif d == 1: # 서쪽
+#         n_hor = hor[1:] + ver[3:]
+#         n_ver = ver[:1] + hor[2:] + ver[2:3] + hor[:1]
         
-    elif d == 2: # 북쪽
-        n_ver = ver[1:] + ver[:1]
-        n_hor[1] = n_ver[1]
+#     elif d == 2: # 북쪽
+#         n_ver = ver[1:] + ver[:1]
+#         n_hor[1] = n_ver[1]
         
-    else:
-        n_ver = ver[3:] + ver[:3]
-        n_hor[1] = n_ver[1]
-    ver = n_ver
-    hor = n_hor
-    return ver + hor
+#     else:
+#         n_ver = ver[3:] + ver[:3]
+#         n_hor[1] = n_ver[1]
+#     ver = n_ver
+#     hor = n_hor
+#     return ver + hor
 
-def chk_map(r, c, d):
-    global N, M, grid
-    # 주사위 이동
-    dlist = [(0, 1), (0, -1), (-1, 0), (1, 0)] # 동-서-북-남
-    nr = r + dlist[d][0] 
-    nc = c + dlist[d][1]
+# def chk_map(r, c, d):
+#     global N, M, grid
+#     # 주사위 이동
+#     dlist = [(0, 1), (0, -1), (-1, 0), (1, 0)] # 동-서-북-남
+#     nr = r + dlist[d][0] 
+#     nc = c + dlist[d][1]
 
-    if 0 <= nr < N and 0 <= nc < M:
-        r = nr
-        c = nc
-        return (r, c)
-    return False
+#     if 0 <= nr < N and 0 <= nc < M:
+#         r = nr
+#         c = nc
+#         return (r, c)
+#     return False
         
-def copy_map(ver, hor, r, c):
-    global grid
-    # 지도가 0인 경우 바닥면 복사
-    if grid[r][c] == 0:
-        grid[r][c] = ver[3]
+# def copy_map(ver, hor, r, c):
+#     global grid
+#     # 지도가 0인 경우 바닥면 복사
+#     if grid[r][c] == 0:
+#         grid[r][c] = ver[3]
 
-    # 바닥면에 지도 복사
-    else:
-        ver[3] = grid[r][c]
-        grid[r][c] = 0
-    return ver + hor
+#     # 바닥면에 지도 복사
+#     else:
+#         ver[3] = grid[r][c]
+#         grid[r][c] = 0
+#     return ver + hor
     
-if __name__ == "__main__":
-    ver = [0, 0, 0, 0]
-    hor = [0, 0, 0]
-    N, M, r, c, k = map(int, input().split())
-    grid = [list(map(int, input().split())) for _ in range(N)]
-    directions = list(map(int, input().split()))
+# if __name__ == "__main__":
+#     ver = [0, 0, 0, 0]
+#     hor = [0, 0, 0]
+#     N, M, r, c, k = map(int, input().split())
+#     grid = [list(map(int, input().split())) for _ in range(N)]
+#     directions = list(map(int, input().split()))
         
-    for d in directions:
-        chk = chk_map(r, c, d-1)
-        if not chk:
-            continue
-        else:
-            r, c = chk    
-            temp = roll_dice(ver, hor, d-1)
-            ver, hor = temp[:4], temp[4:]
-            temp = copy_map(ver, hor, r, c)
-            ver, hor = temp[:4], temp[4:]
-            print(ver[1])
+#     for d in directions:
+#         chk = chk_map(r, c, d-1)
+#         if not chk:
+#             continue
+#         else:
+#             r, c = chk    
+#             temp = roll_dice(ver, hor, d-1)
+#             ver, hor = temp[:4], temp[4:]
+#             temp = copy_map(ver, hor, r, c)
+#             ver, hor = temp[:4], temp[4:]
+#             print(ver[1])
+
+# BOJ - 14888
+
+# def dfs(operations, now, res):
+#     global max_res, min_res, n, cnt
+#     if now == n:
+#         max_res = max(max_res, res)
+#         min_res = min(min_res, res)
+#         return
+    
+#     if operations[0]:
+#         # 반복하는데, 값을 변경해서 넘겨줘야
+#         operations[0] -= 1
+#         res += num[now]
+#         dfs(operations, now+1, res)
+#         operations[0] += 1
+#         res -= num[now]
+        
+#     if operations[1]:
+#         operations[1] -= 1
+#         res -= num[now]
+#         dfs(operations, now+1, res)
+#         operations[1] += 1
+#         res += num[now]
+        
+#     if operations[2]:
+#         operations[2] -= 1
+#         res *= num[now]
+#         dfs(operations, now+1, res)
+#         operations[2] += 1
+#         res = int(res / num[now])
+        
+#     if operations[3]:
+#         operations[3] -= 1
+#         res = int(res / num[now])
+#         dfs(operations, now+1, res)
+#         operations[3] += 1
+#         res = res * num[now]
+
+# if __name__ == "__main__":    
+#     max_res = -1000000001
+#     min_res = 1000000001
+
+#     n = int(input())
+#     num = list(map(int, input().split()))
+#     operations = list(map(int, input().split()))
+
+#     dfs(operations, 1, num[0])
+#     print(max_res)
+#     print(min_res)
+
+# BOJ - 9205
+# from collections import deque
+
+# def bfs():
+#     global visited, dest, festx, festy
+#     q = deque()
+#     q.append((homex, homey))
+#     while q:
+#         nowx, nowy = q.popleft()
+#         if nowx == festx and nowy == festy:
+#             return True
+#         for i in range(n+1):
+#             if not visited[i]:
+#                 cx, cy = dest[i]
+#                 # 갈 수 있는 편의점 또는 락페에 대해
+#                 if abs(cx - nowx) + abs(cy - nowy) <= 50 * 20:
+#                     q.append((cx, cy))
+#                     visited[i] = True
+#     return False
+
+# if __name__ == "__main__":
+    
+#     # stack = []
+#     t = int(input())
+#     k = t
+#     while t > 0:
+#         dest = []
+#         n = int(input())
+#         home = [tuple(map(int, input().split()))]
+#         # 편의점
+#         for i in range(n):
+#             dest.append(tuple(map(int, input().split())))
+#         dest.append(tuple(map(int, input().split())))
+       
+#         visited = [False] * (n + 1)
+        
+#         # 페스티벌, 집 좌표와 거리
+#         festx, festy = dest[-1]
+#         homex, homey = home[0]
+#         dist = abs(festx - homex) + abs(festy - homey)
+        
+#         # 집에서 락페까지 다이렉트로 갈 수 있다면
+#         if dist <= 50 * 20:
+#             print('happy')
+#         else:
+#             if bfs():
+#                 print('happy')
+#             else:
+#                 print('sad')
+#         t -= 1
+        
+# BOJ - 1932
+
+# n = int(input())
+# grid = [list(map(int, input().split())) for _ in range(n)]
+# new = [[0] * n for _ in range(n)]
+# new[0][0] = grid[0][0]
+
+# def dp():
+#     for i in range(n-1):
+#         for j in range(i+1):
+#             new[i+1][j] = max(new[i+1][j], new[i][j] + grid[i+1][j])
+#             new[i+1][j+1] = max(new[i+1][j+1], new[i][j] + grid[i+1][j+1])
+
+# dp()
+# print(max(new[-1]))
+
+# BOJ - 14891
+        
+# def f(n, d):
+#     # 회전
+#     roll(n, d)
+#     # n 방문 처리
+#     checked[n] = True
+#     if n in same:
+#         if not same[n] and not checked[n+1]:
+#             f(n+1, -d)
+#     if n-1 in same:
+#         if not same[n-1] and not checked[n-1]:
+#             f(n-1, -d)
+    
+        
+# def roll(n, d):
+#     global new, array
+#     if d > 0:
+#         array[n] = array[n][7:] + array[n][:7]
+#     else:
+#         array[n] = array[n][1:] + array[n][:1]
+        
+# def chk_same(array, same):
+#     # 맞물리는 곳이 서로 같은지 확인
+#     for i in range(1, 4):
+#         if array[i][2] == array[i+1][6]:
+#             same[i] = True
+#         else:
+#             same[i] = False
+
+# def get_score(array):
+#     score = 0
+#     for i in range(1, 5):
+#         if array[i][0] == '1':
+#             score += (2 ** (i-1))
+#     return score
+
+# if __name__ == "__main__":
+#     # array = ['',
+#     #     '10001011',
+#     #     '10000011',
+#     #     '01011011',
+#     #     '00111101']
+
+#     array = ['']
+#     for _ in range(4):
+#         array.append(input())
+
+#     # 맞물리는 곳이 서로 같은지 확인용 딕셔너리
+#     same = dict({1:False, 2:False, 3:False})
+
+#     k = int(input())
+
+#     # 방문 처리(돌리거나 돌리지 않거나 판단했는지)
+#     while k:
+#         checked = [False] * 5
+#         n, d = map(int, input().split())
+#         chk_same(array, same)
+#         f(n, d)
+#         # for i in range(1, 5):
+#         #     print(array[i])
+#         k -= 1
+#     score = get_score(array)
+#     print(score)
+
+# BOJ - 14500
+# dfs
+# def dfs(x, y):
+#     global temp, cnt, res
+#     temp += grid[y][x]
+#     cnt += 1
+#     # 만약 4개가 된다면 반환
+#     if cnt == 4:
+#         # print('-----------')
+#         # for i in range(n):
+#         #     print(grid[i])
+#         # print(temp)
+#         res = max(res, temp)
+#         temp -= grid[y][x]
+#         cnt -= 1
+#         return
+#     rev = grid[y][x]
+#     grid[y][x] = -1
+#     # 4가지 방향에 대해 dfs 수행
+#     for i in range(4):
+#         nx, ny = x + dx[i], y + dy[i]
+#         if 0 <= nx < m and 0 <= ny < n:
+#             if grid[ny][nx] >= 0:
+#                 dfs(nx, ny)
+#     grid[y][x] = rev
+#     temp -= grid[y][x]
+#     cnt -= 1
+
+# # ㅏ, ㅓ, ㅗ, ㅜ 예외 처리
+# # ㅏ일 때
+# def f(x, y):
+#     global res, grid
+#     # 입력으로 받은 x, y에 대해
+#     for i in range(4):
+#         temp = 0
+#         y1, x1 = y + ex[i][0][0], x + ex[i][0][1]
+#         y2, x2 = y + ex[i][1][0], x + ex[i][1][1]
+#         y3, x3 = y + ex[i][2][0], x + ex[i][2][1]
+#         y4, x4 = y + ex[i][3][0], x + ex[i][3][1]
+#         # 모든 값이 범위 내에 있다면
+#         if 0 <= y1 < n and 0 <= y2 < n and 0 <= y3 < n and 0 <= y4 < n and 0 <= x1 < m and 0 <= x2 < m and 0 <= x3 < m and 0 <= x4 < m:
+#             temp += grid[y1][x1]
+#             temp += grid[y2][x2]
+#             temp += grid[y3][x3]
+#             temp += grid[y4][x4]
+#         res = max(res, temp)
+    
+# if __name__ == "__main__":
+#     # dfs 위한 방향 배열
+#     dx = [1, -1, 0, 0]
+#     dy = [0, 0, 1, -1]
+    
+#     # 예외 처리를 위한 배열
+#     ex = [[(0, 0), (1, 0), (1, 1), (2, 0)],
+#           [(0, 0), (1, -1), (1, 0), (2, 0)],
+#           [(0, 0), (1, -1), (1, 0), (1, 1)],
+#           [(0, 0), (0, 1), (0, 2), (1, 1)]]
+
+#     n, m = map(int, input().split())
+#     grid = [list(map(int, input().split())) for _ in range(n)]
+    
+#     res = 0
+#     for i in range(n):
+#         for j in range(m):
+#             temp = 0
+#             cnt = 0
+#             dfs(j, i)
+#             f(j, i)        
+#     print(res)
+
+# BOJ - 14890
+# 한 줄씩 살펴 본다
+# 모든 가로 줄을 살펴봤다면 그 다음엔 90도 회전하자!
+# def cnt_road():
+#     global arr, cnt
+#     for i in range(N):
+#         visited = [0] * N
+#         chk = True
+#         for j in range(N-1):
+#             diff = arr[i][j] - arr[i][j+1]
+#             # 높낮이와 상관 없이 높이 차가 2이상이라면
+#             # 다음 줄을 확인한다
+#             if diff < -1 or diff > 1:
+#                 chk = False
+#                 break
+#             # 앞이 더 높다면
+#             elif diff == 1:
+#                 # 경사로 설치 확인, 방향 1(x+1, y)
+#                 if not chk_ramp(visited, j+1, i, diff):
+#                     chk = False
+#                     break
+#             # 뒤가 더 높다면
+#             elif diff == -1:
+#                 # 경사로 설치 확인, 방향 -1(x-1, y)
+#                 if not chk_ramp(visited, j, i, diff):
+#                     chk = False
+#                     break
+#         # 모두 끝나면
+#         if chk:
+#             cnt += 1
+    
+# # 경사로 설치 함수
+# def chk_ramp(visited, x, y, d):
+#     # 방향이 들어와야 한다
+#     # visited도 불러와야 한다
+#     # 시작 좌표도 불러와야 한다
+#     # d는 1(순방향), -1(역방향)
+#     # 이 함수를 좀 수정해야겠다
+#     global L
+#     stack = []
+#     if d == 1:
+#         # 앞이 더 높다 -> 경사로를 한 칸 뒤에 설치해야 한다
+#         for i in range(0, L):
+#             if ((x+i) < 0 or (x+i) >= N) or visited[x+i]:
+#                 return False
+#             # 경사로 만들어야 하는 위치에 경사로가 없다면(만들 수 있다면)
+#             else:
+#                 stack.append(x+i)
+            
+#     else:
+#         # 뒤가 더 높다 -> 경사로를 현재 위치부터 설치해야 한다
+#         for i in range(0, L):
+#             if ((x-i) < 0 or (x-i) >= N) or visited[x-i]:
+#                 return False
+#             else:
+#                 stack.append(x-i)
+#     for k in stack:
+#         visited[k] = 1
+#     return True
+
+# if __name__ == "__main__":
+#     N, L = map(int, input().split())
+#     arr = [list(map(int, input().split())) for _ in range(N)]
+#     cnt = 0
+#     cnt_road()
+#     arr = [list(arr[::-1][i][j] for i in range(N)) for j in range(N)]
+#     cnt_road()
+#     print(cnt)
+
+# BOJ - 15686
+
+# def combinations(m, new, start):
+#     global survive
+#     if len(new) == m:
+#         # new에 있는 것들로 치킨집을 고른다
+#         f(new)
+#         return 
+#     for i in range(start, chicken):
+#         combinations(m, new + [i], i + 1)
+
+# def f(survive):
+#     global mn, dist
+#     cdist = 0
+#     for j in range(house):
+#         # 각 집에서 가장 가까운 치킨 거리를 저장할 변수
+#         closest = 25001
+#         for ch in survive:
+#             closest = min(closest, dist[j][ch])
+#         cdist += closest
+#     mn = min(cdist, mn)
+
+# if __name__ == "__main__":
+
+#     N, M = map(int, input().split())
+#     grid = [list(map(int, input().split())) for _ in range(N)]
+    
+#     # 전체 중 치킨집의 개수와 거리를 저장, 집의 개수와 거리를 저장
+#     house = 0
+#     house_xy = []
+#     chicken = 0
+#     chicken_xy = []
+#     for i in range(N):
+#         for j in range(N):
+#             if grid[i][j] == 1:
+#                 house += 1
+#                 house_xy.append((j, i))
+#             elif grid[i][j] == 2:
+#                 chicken += 1
+#                 chicken_xy.append((j, i))
+
+#     # 각 집에서 치킨집까지 거리를 계산해 저장
+#     dist = [[0] * chicken for _ in range(house)]
+#     for i in range(house):
+#         for j in range(chicken):
+#             h_x, h_y = house_xy[i]
+#             c_x, c_y = chicken_xy[j]
+#             dist[i][j] = abs(h_x - c_x) + abs(h_y - c_y)
+
+#     mn = 10 ** 6
+#     combinations(M, [], 0)
+#     print(mn)
+
+# BOJ - 15683
+# 모든 칸의 CCTV 좌표를 저장한다
+            
+# CCTV의 개수대로 중복 조합을 수행한다
+# CCTV의 개수만큼 (0, 1, 2, 3)의 값 중 하나씩을 갖도록
+# def h(k, new, start):
+#     global cctv_lst
+#     if len(new) == k:
+#         # print(new)
+#         # 각 CCTV의 방향에 대해 감시한다
+#         watch(new)
+#         return
+#     for i in range(start, 4):
+#         h(k, new + [i], start)
+        
+        
+# # 각 CCTV 방향에 대해 감시한다
+# def watch(new):
+#     global zero, mn
+#     # temp = zero
+#     temp = 0
+#     chk_lst = []
+#     for i in range(len(new)):
+#         # cctv 번호와 방향
+#         c, x, y = cctv_lst[i]
+#         d = new[i]
+#         # c와 d에 맞게 감시하고.. 해당 좌표를 chk_lst에 넣는다
+#         # 벽에 부딪힐 때까지 해야하므로 while 반복 & 종료조건 걸어줌
+#         if c == 1:
+#             f(chk_lst, d, x, y)
+            
+#         elif c == 2: 
+#             f(chk_lst, d, x, y)
+#             f(chk_lst, (d+2) % 4, x, y)
+        
+#         elif c == 3:
+#             f(chk_lst, d, x, y)
+#             f(chk_lst, (d+1) % 4, x, y)
+            
+#         elif c == 4:
+#             f(chk_lst, d, x, y)
+#             f(chk_lst, (d-1) % 4, x, y)
+#             f(chk_lst, (d+1) % 4, x, y)
+            
+#         else: # 얘는 역시 따로 해주는 게 맞을 것 같다
+#             f(chk_lst, 0, x, y)
+#             f(chk_lst, 1, x, y)
+#             f(chk_lst, 2, x, y)
+#             f(chk_lst, 3, x, y)
+            
+#         temp = len(set(chk_lst))
+#         mn = min(mn, zero - temp)
+        
+# # 아래 부분을 함수로 만들어서 1, 2, 3, 4 모두 반복 수행하면 될 것 같음
+# def f(chk_lst, d, x, y):
+#     global grid, M, N
+#     while True:       
+#         nx = x + directions[d][0]
+#         ny = y + directions[d][1]
+#         if not (0 <= nx < M and 0 <= ny < N):
+#             return
+#         if grid[ny][nx] == 6:
+#             return
+#         # 종료되지 않는 한
+#         if grid[ny][nx] == 0:
+#             chk_lst.append((nx, ny))    
+#         x, y = nx, ny
+
+# if __name__ == "__main__":
+#     # N, M = 3, 7
+#     # arr1 = [[0, 0, 0, 0, 0, 0],
+#     #         [0, 0, 0, 0, 0, 0],
+#     #         [0, 0, 1, 0, 6, 0],
+#     #         [0, 0, 0, 0, 0, 0]]
+    
+#     # arr2 = [[0, 0, 0, 0, 0, 0],
+#     #         [0, 2, 0, 0, 0, 0],
+#     #         [0, 0, 0, 0, 6, 0],
+#     #         [0, 6, 0, 0, 2, 0],
+#     #         [0, 0, 0, 0, 0, 0],
+#     #         [0, 0, 0, 0, 0, 5]]
+    
+#     # arr3 = [[4, 0, 0, 0, 0, 0, 0],
+#     #         [0, 0, 0, 2, 0, 0, 0],
+#     #         [0, 0, 0, 0, 0, 0, 4]]
+#     # grid = arr3
+    
+#     N, M = map(int, input().split())
+#     grid = [list(map(int, input().split())) for _ in range(N)]
+    
+#     directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+    
+#     cctv_lst = []
+#     zero = 0
+#     # 정상작동동
+#     for y in range(N):
+#         for x in range(M):
+#             if grid[y][x] == 0:
+#                 zero += 1
+#             elif grid[y][x] < 6:
+#                 cctv_lst.append((grid[y][x], x, y))
+    
+#     mn = zero
+#     h(len(cctv_lst), [], 0)
+#     print(mn)
+
+# BOJ - 15684
+# 사다리 타기
+# def dfs(hor_lst, end_point, x, y):
+#     if y == H + 1:
+#         end_point.append(x)
+#         return
+#     else:
+#         if (y, x) in set(hor_lst):
+#             nx = x + 1
+#         elif (y, x-1) in set(hor_lst):
+#             nx = x - 1
+#         else:
+#             nx = x
+#         dfs(hor_lst, end_point, nx, y+1)
+
+# def game(hor_lst):
+#     end_point = []
+#     chk = True
+#     for i in range(1, N+1):
+#         dfs(hor_lst, end_point, i, 1)
+#     for i in range(0, N):
+#         if end_point[i] != i+1:
+#             chk = False
+#             break
+#     return chk
+
+# # 추가할 수 있는 가로선을 구한다
+# def combinations(l, new, start):
+#     global combs, hor_lst
+#     if l == len(new):
+#         # combs.append(new)
+#         add_line(new)
+#         return
+#     for y in range(start, H+1):
+#         for x in range(1, N):
+#             # 이미 만들어진 가로선이면
+#             if ((y, x) in set(hor_lst)) or ((y, x-1) in set(hor_lst)):
+#                 continue
+#             # 서로 이어지는 가로선이면
+#             elif ((y, x+1) in set(new)) or ((y, x-1) in set(new)):
+#                 continue
+#             combinations(l, new+[(y, x)], y+1)
+
+# def add_line(new):
+#     if game(hor_lst + new):
+#         print(len(new))
+#         exit(0)
+#     return False
+#     # 그리고 i의 endpoint가 i인지 확인
+    
+
+# if __name__ == "__main__":
+#     N, M, H = map(int, input().split())
+#     hor_lst = []
+#     for _ in range(M):
+#         data1, data2 = map(int, input().split())
+#         hor_lst.append((data1, data2))
+#     # 만약 가로선의 개수가 0일 때
+#     if M == 0:
+#         print(0)
+#         exit(0)
+    
+#     # 1개, 2개, 3개 중 몇 개까지 추가할 수 있는지
+#     limit = H*(N-1) - len(hor_lst)
+#     limit = min(limit, 3)
+#     combs = [[]]
+#     for i in range(1, limit+1):
+#         combinations(i, [], 1)
+#     print(-1)
+
+# BOJ - 17144
+# from collections import deque
+# def spread():
+#     # 미세먼지 확산
+#     global cleaned, purifier_r
+#     for r in range(R):
+#         for c in range(C):
+#             if room[r][c] == -1:
+#                 # 회전을 위해 r값을 저장해둔다
+#                 purifier_r = min(purifier_r, r)
+#             if room[r][c] >= 5:
+#                 value = room[r][c]//5
+#                 # 확산된 방의 개수 
+#                 cnt = 0
+#                 # 확산
+#                 for i in range(4):
+#                     nr = r + dr[i]
+#                     nc = c + dc[i]
+#                     if 0 <= nr < R and 0 <= nc < C:
+#                         if cleaned[nr][nc] != -1:
+#                             cleaned[nr][nc] += value
+#                             cnt += 1
+#                 cleaned[r][c] -= value * cnt
+            
+# # 공청기를 돌린다
+# # p는 공기청정기 r, end는 각 방향의 끝(위쪽 공청기는 end가 0, 아래는 R-1)
+# # d는 방향 아래가 +1, 위가 -1
+# def purify(p, end, d):
+#     global cleaned
+#     deq = deque()
+#     if p > end:
+#         deq.extend(arr[0] for arr in cleaned[end-d:p][::-1]) # 왼쪽
+#     else:
+#         deq.extend(arr[0] for arr in cleaned[p+d:end])
+#     deq.extend(cleaned[end]) # 위쪽
+#     if p > end:
+#         deq.extend(arr[C-1] for arr in cleaned[end-d:p])
+#     else:
+#         deq.extend(arr[C-1] for arr in cleaned[p+d:end][::-1]) # 오른쪽
+#     deq.extend(cleaned[p][1:][::-1])
+#     deq.append(0) # 정화된 공기 하나 추가
+#     deq.popleft()
+    
+#     for i in range(p+d, end, d):
+#         cleaned[i][0] = deq.popleft()
+#     for j in range(0, C):
+#         cleaned[end][j] = deq.popleft()
+#     for i in range(end-d, p, -d):
+#         cleaned[i][C-1] = deq.popleft()
+#     for j in range(C-1, 0, -1):
+#         cleaned[p][j] = deq.popleft()
+
+# def cnt_dirt():
+#     global room
+#     cnt = 0
+#     for r in range(R):
+#         for c in range(C):
+#             if room[r][c] > 0:
+#                 cnt += room[r][c]
+#     return cnt
+
+# R, C, T = map(int, input().split())
+# room = [list(map(int, input().split())) for _ in range(R)]
+
+# cleaned = [arr[:] for arr in room]
+
+# dr = [1, -1, 0, 0]
+# dc = [0, 0, 1, -1]
+# purifier_r = R
+
+# for i in range(T):
+    
+#     spread()
+#     purify(purifier_r, 0, -1)
+#     purify(purifier_r+1, R-1, +1)
+#     room = [arr[:] for arr in cleaned]
+# print(cnt_dirt())
+
+# BOJ - 17140
+# from collections import deque
+
+
+# def Rf():
+#     global A, R, mx_c
+#     new_A = []
+#     for i in range(R):
+#         d = dict()
+#         deq = deque()
+#         deq.clear()
+#         deq.extend(A[i])
+#         while deq:
+#             # popleft 하면서 개수 세기
+#             key = deq.popleft()
+#             if key == 0: continue
+#             if key in d:
+#                 d[key] += 1
+#             else:
+#                 d.update({key: 1})
+#         temp = sorted(d, key = lambda x: (d[x],x))
+#         new_R = []
+#         for val in temp:
+#             new_R.append(val)
+#             new_R.append(d[val])
+#         mx_c = max(mx_c, len(new_R))
+#         new_A.append(new_R)
+#     for i in range(len(new_A)):
+#         new_A[i] += [0] * (mx_c - len(new_A[i]))
+#     A = [arr[:] for arr in new_A]
+# # print(new_A)
+
+# def Cf():
+#     global A, C, mx_r
+#     new_A = []
+#     # C연산 - 배열 A의 모든 열에 대해 수행
+#     for j in range(C):
+#         d = dict()
+#         deq = deque()
+#         deq.clear()
+#         deq.extend(arr[j] for arr in A[:])
+#         while deq:
+#             key = deq.popleft()
+#             if key == 0: continue
+#             if key in d:
+#                 d[key] += 1
+#             else:
+#                 d.update({key: 1})
+#         temp = sorted(d, key=lambda x: (d[x], x))
+#         new_C = []
+#         for val in temp:
+#             new_C.append(val)
+#             new_C.append(d[val])
+#         mx_r = max(mx_r, len(new_C))
+#         new_A.append(new_C)
+#     for i in range(len(new_A)):
+#         new_A[i] += [0] * (mx_r - len(new_A[i]))
+#     new_A = list(map(list, zip(*new_A)))
+#     A = [arr[:] for arr in new_A]
+
+# # 100개 이상이 되면 자르기
+# def cut(n):
+#     # 만약 행이 100개 이상이라면 행을 자르기
+#     if n > 0:
+#         A = A[:100]
+#     # 만약 열이 100개 이상이라면
+#     else:
+#         for i in range(R):
+#             A[i] = A[i][:100]
+
+# R, C = 3, 3
+# r, c, k = map(int, input().split())
+# A = [list(map(int, input().split())) for _ in range(R)]
+# # R연산 - 배열 A의 모든 행에 대해 정렬 수행
+# mx_r = 0
+# mx_c = 0
+# for t in range(101):
+#     if 0 <= r-1 < R and 0 <= c-1 < C:
+#         if A[r-1][c-1] == k:
+#             print(t)
+#             exit(0)
+#     if R >= C:
+#         Rf()
+#         if mx_c > 100:
+#             cut(-1)
+#             mx_c = 100
+#         C = mx_c
+#     else:
+#         Cf()
+#         if mx_r > 100:
+#             cut(1)
+#             mx_r = 100
+#         R = mx_r
+# print(-1)
+
+# BOJ - 14501
+# N = int(input())
+# T = [list(map(int, input().split())) for _ in range(N)]
+
+# dp = [0] * (N+1)
+
+# for i in range(N-1, -1, -1):
+#     if (N-i) < T[i][0]:
+#         dp[i] = dp[i+1]
+#     else:
+#         dp[i] = max(dp[i+1], dp[i+T[i][0]] + T[i][1])
+# print(dp[0])
+
+# BOJ - 18353
+# N = int(input())
+# T = list(map(int, input().split()))
+
+# dp = [1] * (N)
+# for i in range(N):
+#     for j in range(i):
+#         if T[i] < T[j]:
+#             dp[i] = max(dp[i], dp[j] + 1)
+# print(N - max(dp))
+
+# BOJ - 15685
+# 드래곤 커브 그리기
+# directions = [(1, 0), (0, -1), (-1, 0), (0, 1)]
+# # 오른쪽, 위쪽, 왼쪽, 아래쪽
+
+# grid_lst = []
+# # N = 3
+# # array = [[3, 3, 0, 1], [4, 2, 1, 3], [4, 2, 2, 1]]
+# N = int(input())
+# array = [list(map(int, input().split())) for _ in range(N)]
+
+# def f(x, y, new):
+#     global stack
+#     for i in range(len(stack) - 1, -1, -1):
+#         d = (stack[i] + 1) % 4
+#         # 방향 갱신 이후 드래곤 커브를 그린다
+#         x, y = draw(x, y, d)
+#         new.append(d)
+#     return x, y
+
+# def draw(x, y, d):
+#     nx, ny = x + directions[d][0], y + directions[d][1]
+#     if 0 <= nx <= 100 and 0 <= ny <= 100:
+#         grid_lst.append((nx, ny))
+#     return (nx, ny)
+    
+
+# # array의 값들은 한 번만 사용되면 된다
+# for i in range(N):
+#     stack = []
+#     x, y, d, g = array[i]
+#     stack.append(d)
+#     if 0 <= x <= 100 and 0 <= y <= 100:
+#         grid_lst.append((x, y))
+#     x, y = draw(x, y, d)
+#     for j in range(g):
+#         new = []
+#         x, y = f(x, y, new)
+#         stack.extend(new)
+# ans = 0
+# s = set(grid_lst)
+# for dot in s:
+#     x, y = dot
+#     if (x+1, y) in s and (x+1, y+1) in s and (x, y+1) in s:
+#         ans += 1
+# print(ans)
+
+# BOJ - 16235
+# from collections import deque
+# N, M, K = map(int, input().split())
+# grid = [[5] * N for _ in range(N)]
+# A = [list(map(int, input().split())) for _ in range(N)]
+# T = [tuple(map(int, input().split())) for _ in range(M)]
+
+# for k in range(K):
+#     new = [arr[:] for arr in grid]
+#     T = deque(sorted(T, key = lambda x: (x[0], x[1], x[2])))
+#     # 봄 & 여름
+#     l = len(T)
+#     for i in range(l):
+#         c, r, z = T.popleft()
+#         # 자신의 나이만큼 양분 먹는다 - 없으면 즉사
+#         # 나이가 적은 묘목부터 먹는다
+#         if grid[r-1][c-1] >= z:
+#             grid[r-1][c-1] -= z
+#             new[r-1][c-1] -= z
+#             T.append((c, r, z+1))
+#         else:
+#             # 비료 목록에 들어감 - 죽었으므로 나이 유지
+#             new[r-1][c-1] += (z // 2)  
+#     grid = [arr[:] for arr in new]
+
+#     # 가을
+#     # 나이가 5의 배수일 때
+#     d = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)]
+#     big_tree = dict()
+#     for i in range(len(T)):
+#         c, r, z = T[i]
+#         if z % 5 == 0:
+#             if (c, r) in big_tree:
+#                 big_tree[(c, r)] += 1
+#             else:
+#                 big_tree[(c, r)] = 1
+#     for i in big_tree:
+#         c, r = i
+#         for j in range(len(d)):
+#             nc, nr = c + d[j][0], r + d[j][1]
+#             if 1 <= nc <= N and 1 <= nr <= N:
+#                 for k in range(big_tree[(c, r)]):
+#                     T.append((nc, nr, 1))
+#     # 겨울
+#     # 양분 추가
+#     for r in range(N):
+#         for c in range(N):
+#             grid[r][c] += A[r][c]
+# print(len(T))
+
+# BOJ - 20055
+# robot = []
+# N, K = map(int, input().split())
+# belt = list(map(int, input().split()))
+# cnt = 0
+# t = 0
+# while True:
+#     t += 1
+#     temp = []
+#     # 1번째 단계
+#     belt = belt[2*N-1:] + belt[:2*N-1]
+#     for i in range(len(robot)):
+#         if robot[i] + 1 < N-1:
+#             temp.append(robot[i] + 1)
+#     robot = temp[:]
+
+#     # 2번째 단계
+#     robot.sort()
+#     for i in range(len(robot)-1, -1, -1):
+#         # 만약 앞으로 이동할 수 있다면 - (로봇X)
+#         if belt[robot[i]+1] > 0 and (robot[i]+1) not in set(robot):
+#             if (robot[i] + 1) < N:
+#                 robot[i] += 1
+#                 belt[robot[i]] -= 1
+#                 if belt[robot[i]] == 0:
+#                     cnt += 1
+#                 if robot[i] == N:
+#                     robot.pop()
+#     # 개수 확인...
+#     if cnt >= K:
+#         print(t)  
+#         break
+
+#     # 3번째 단계
+#     # 올리는 자리의 내구도가 0보다 크면
+#     if belt[0] > 0:
+#         belt[0] -= 1
+#         robot.append(0)
+#         if belt[0] == 0:
+#             cnt += 1
+    
+#     # 개수 확인...
+#     if cnt >= K:
+#         print(t)  
+#         break
+
+# BOJ - 16236
+
+# from collections import deque    
+# dx = [1, -1, 0, 0]
+# dy = [0, 0, 1, -1]
+# def bfs(y, x, shark):
+#     global eat_lst
+#     visited = [[0] * N for _ in range(N)]
+#     que = deque()
+#     que.append((0, x, y))
+#     visited[y][x] = 1
+#     # 종료를 위한 조건
+#     end = float('inf')
+#     while que:
+#         dist, cx, cy = que.popleft()
+#         if dist == end:
+#             return
+#         for i in range(4):
+#             nx, ny = cx + dx[i], cy + dy[i]
+#             # 방문한 적 없고 물고기의 크기가 상어보다 작으면 queue에 추가
+#             if 0 <= nx < N and 0 <= ny < N and not visited[ny][nx] and ocean[ny][nx] <= shark:
+#                 que.append((dist+1, nx, ny))
+#                 visited[ny][nx] = 1
+#                 # 만약 먹을 수 있는 물고기가 있다면
+#                 if 0 < ocean[ny][nx] < shark:
+#                     end = dist + 1
+#                     eat_lst.append((dist+1, nx, ny))
+
+# N = int(input())
+# ocean = [list(map(int, input().split())) for _ in range(N)]
+# # 최초
+# sr, sc = 0, 0
+# for r in range(N):
+#     for c in range(N):
+#         if ocean[r][c] == 9:
+#             sr, sc = r, c
+#             break
+
+# time = 0 # 시간
+# shark = 2
+# cnt = 0
+# while True:
+#     eat_lst = []
+#     bfs(sr, sc, shark)
+#     # 먼저 먹을 물고기 정렬
+#     eat_lst = sorted(eat_lst, key=lambda x:(x[2], x[1]))
+#     if eat_lst:
+#         ocean[sr][sc] = 0
+#         t, x, y = eat_lst[0]
+#         sr, sc = y, x
+#         ocean[y][x] = 0
+#         cnt += 1
+#         time += t
+#         if cnt >= shark:
+#             shark += 1
+#             cnt = 0
+#     else:
+#         break
+# print(time)
+
+# BOJ - 17142
+# from collections import deque
+
+# # 조합
+# def combinations(m, arr, start):
+#     global mn, zero
+#     if len(arr) == m:
+#         mn = min(mn, bfs(arr, zero))
+#         return
+#     for i in range(start, len(virus)):
+#         combinations(m, arr + [virus[i]], i+1)
+
+# dx = [1, -1, 0, 0]
+# dy = [0, 0, 1, -1]
+# def bfs(arr, zero):
+#     visited = [[0] * N for _ in range(N)]
+#     time = 0
+#     que = deque()
+#     for i in range(M):
+#         y, x = arr[i]
+#         que.append((0, y, x))
+#         visited[y][x] = 1
+#     while que:
+#         dist, y, x = que.popleft()
+#         for i in range(4):
+#             ny, nx = y + dy[i], x + dx[i]
+#             if 0 <= ny < N and 0 <= nx < N and not visited[ny][nx] and grid[ny][nx] != 1: 
+#                 if grid[ny][nx] == 0:
+#                     time = dist+1
+#                     zero -= 1
+#                 visited[ny][nx] = dist+1
+#                 que.append((dist+1, ny, nx))
+#     if zero == 0:
+#         return time
+#     else:
+#         return float('inf')
+
+# # N, M = 7, 3
+# # grid = [[2, 0, 0, 0, 1, 1, 0],
+# #         [0, 0, 1, 0, 1, 2, 0],
+# #         [0, 1, 1, 0, 1, 0, 0],
+# #         [0, 1, 0, 0, 0, 0, 0],
+# #         [0, 0, 0, 2, 0, 1, 1],
+# #         [0, 1, 0, 0, 0, 0, 0],
+# #         [2, 1, 0, 0, 0, 0, 2]]
+
+# N, M = map(int, input().split())
+# grid = [list(map(int, input().split())) for _ in range(N)]
+# mn = float('inf')
+# zero = 0
+# # 바이러스 위치를 저장        
+# virus = []
+# for i in range(N):
+#     for j in range(N):
+#         if grid[i][j] == 2:
+#             virus.append((i, j))
+#         if grid[i][j] == 0:
+#             zero += 1
+# # 바이러스를 선택한다
+# combinations(M, [], 0)
+# if mn == float('inf'):
+#     print(-1)
+# else:
+#     print(mn)
+
+# BOJ - 19236
+
+# def move_fish(shark, fish, grid):
+#     # 물고기를 이동시킨다
+#     # 반환할 이차원 배열
+#     result = [arr[:] for arr in grid]
+#     for i in sorted(fish): 
+#         x, y = fish[i] 
+#         move = False
+#         d = result[y][x][1] - 1
+#         d1 = d
+#         while not move:
+#             nx, ny = x + directions[d][0], y + directions[d][1]
+#             # 범위 내에서
+#             if 0 <= nx < 4 and 0 <= ny < 4:
+#                 # 상어가 없다면
+#                 if (nx, ny) != shark:
+#                     # 다른 물고기가 있는 자리라면 - 자리 바꿈
+#                     if result[ny][nx][0] in fish:
+#                         fish[i] = (nx, ny)
+#                         fish[result[ny][nx][0]] = (x, y)
+#                         result[ny][nx], result[y][x] = (result[y][x][0], d+1), result[ny][nx]
+#                     # 다른 물고기가 없는 자리라면 - 그냥 이동
+#                     else:
+#                         result[ny][nx], result[y][x] = (result[y][x][0], d+1), (0, 0)
+#                         fish[i] = (nx, ny)
+#                     # 살아있는 물고기 위치도 이동
+#                     move = True
+#                     break
+#             # 상어가 있거나 범위를 벗어난다면
+#             # 방향을 바꾼다
+#             d = (d + 1) % 8
+#             # 다시 원방향으로 돌아오면 break
+#             if d == d1:
+#                 break
+#     return (result, fish)
+
+# def move_shark(x, y, fish, grid, ate):
+#     global ans
+#     if ans < ate:
+#         ans = ate
+#     # 상어가 들어온 자리가 범위 내, 물고기가 있을 경우
+#     if 0 <= x < 4 and 0 <= y < 4 and grid[y][x][0] != 0:
+#         # 상어 방향
+#         d = grid[y][x][1] - 1
+#         dx = directions[d][0]
+#         dy = directions[d][1]
+#         fish.pop(grid[y][x][0])
+#         # 잡아먹음
+#         ate += grid[y][x][0]
+#         grid[y][x] = (0, grid[y][x][1])
+#         # rotate를 돌리고 -> 그 결과로 다시 move_shark
+#         for cnt in range(1, 4):
+#             rotated, new_fish = move_fish((x, y), fish.copy(), grid)
+#             move_shark(x + dx * cnt, y + dy * cnt, new_fish.copy(), rotated, ate)
+#     return
+
+# if __name__ == "__main__":
+#     # 방향, (x, y)
+#     directions = [(0, -1), (-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1)]
+
+#     grid = []
+#     for i in range(4):
+#         temp = []
+#         data = list(map(int, input().split()))
+#         for i in range(0, 8, 2):
+#             temp.append((data[i], data[i+1]))
+#         grid.append(temp)
+        
+#     # grid로부터 물고기 정보를 저장하는 dictionary를 만든다
+#     # fish는 살아있는 물고기 정보
+#     fish = dict()
+#     for i in range(4):
+#         for j in range(4):
+#             fish.update({grid[i][j][0]: (j, i)}) # i: (x, y)
+    
+#     ans = 0
+#     move_shark(0, 0, fish, grid, 0)
+#     print(ans)
+                
+# BOJ - 19237
+# 상어의 현재 위치 저장 (x, y)
+
+# 냄새를 뿌리기
+def update_scent():
+	del_lst = []
+	for i in shark_scent:
+		if shark_scent[i][1] - 1 == 0:
+			del_lst.append(i)
+		else:
+			shark_scent[i] = (shark_scent[i][0], shark_scent[i][1]-1)
+		# 모든 냄새 1씩 감소 - 0이 되면 사라짐
+	for j in del_lst:
+		shark_scent.pop(j)
+ 
+	for num in shark_now:
+		x, y = shark_now[num]
+		# 다시 돌아오더라도 K로 업데이트
+		shark_scent.update({(x, y): (num, K)})
+
+# 동일한 칸으로 들어가는 건 따로 처리해줘야 한다
+
+def move_shark():
+	# 2. 상어가 각자의 우선순위에 알맞는 위치로 이동
+	for num in sorted(shark_now): # 각 살아있는 상어에 대해
+		x, y = shark_now[num] # 현재 위치
+		d = shark_d[num] # 현재 방향
+		move = False
+		# 우선순위 방향대로 빈 공간을 살핀다
+		for i in range(4):
+			n_d = priority[num][d-1][i]
+			# print((num, d, n_d))
+			nx, ny = x + directions[n_d-1][0], y + directions[n_d-1][1]
+			# 만약 n_d 방향에 빈 칸이 있다면
+			if 0 <= nx < N and 0 <= ny < N and (nx, ny) not in shark_scent:
+				shark_now[num] = (nx, ny)
+				# 방향을 바꿔준다
+				shark_d[num] = n_d
+				move = True
+				break
+		# 주변에 빈 칸이 없었다면
+		if not move:
+			for i in range(4):
+				n_d = priority[num][d-1][i]
+				nx, ny = x + directions[n_d-1][0], y + directions[n_d-1][1]
+				if 0 <= nx < N and 0 <= ny < N and (nx, ny) in shark_scent:
+					if shark_scent[(nx, ny)][0] == num:
+						shark_now[num] = (nx, ny)
+						shark_d[num] = n_d
+						move = True
+						break
+
+def chk_same():
+	del_lst = []
+	for least in sorted(shark_now):
+		for big in range(least+1, M+1):
+			if big not in shark_now:
+				continue
+			else: 
+				if shark_now[least] == shark_now[big]:
+					del_lst.append(big)
+	for i in del_lst:
+		shark_now.pop(i)
+
+# 상어가 1마리인지 확인
+def chk_one():
+	if len(shark_now) == 1:
+		return True
+	return False
+
+def main():
+	# 풀이
+	# 1. 최초 위치에 냄새를 뿌린다
+	for t in range(1, 1001):
+		move_shark()
+		chk_same()
+		chk = chk_one()
+		update_scent()
+		if chk:
+			return t
+	return False
+
+if __name__ == "__main__":
+	chk = False
+    
+	shark_now = dict()
+	shark_scent = dict() # (x, y): (number, k)
+	directions = [(0, -1), (0, 1), (-1, 0), (1, 0)] # (0~3)
+
+	N, M, K = map(int, input().split())
+	grid = [list(map(int, input().split())) for _ in range(N)]
+	shark_d = [0] + list(map(int, input().split()))
+	priority = dict()
+	for num in range(1, M+1):
+		data = []
+		for i in range(4):
+			data.append(list(map(int, input().split())))
+		priority.update({num: data})
+		
+
+	for i in range(N):
+		for j in range(N):
+			if 1 <= grid[i][j] <= M:
+				shark_scent.update({(j, i): (grid[i][j], K)})
+				shark_now.update({grid[i][j]: (j, i)})
+	chk = main()
+	if chk:
+		print(chk)
+	else:
+		print(-1)
