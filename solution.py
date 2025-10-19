@@ -3299,110 +3299,2145 @@
 # BOJ - 19237
 # 상어의 현재 위치 저장 (x, y)
 
-# 냄새를 뿌리기
-def update_scent():
-	del_lst = []
-	for i in shark_scent:
-		if shark_scent[i][1] - 1 == 0:
-			del_lst.append(i)
-		else:
-			shark_scent[i] = (shark_scent[i][0], shark_scent[i][1]-1)
-		# 모든 냄새 1씩 감소 - 0이 되면 사라짐
-	for j in del_lst:
-		shark_scent.pop(j)
+# # 냄새를 뿌리기
+# def update_scent():
+# 	del_lst = []
+# 	for i in shark_scent:
+# 		if shark_scent[i][1] - 1 == 0:
+# 			del_lst.append(i)
+# 		else:
+# 			shark_scent[i] = (shark_scent[i][0], shark_scent[i][1]-1)
+# 		# 모든 냄새 1씩 감소 - 0이 되면 사라짐
+# 	for j in del_lst:
+# 		shark_scent.pop(j)
  
-	for num in shark_now:
-		x, y = shark_now[num]
-		# 다시 돌아오더라도 K로 업데이트
-		shark_scent.update({(x, y): (num, K)})
+# 	for num in shark_now:
+# 		x, y = shark_now[num]
+# 		# 다시 돌아오더라도 K로 업데이트
+# 		shark_scent.update({(x, y): (num, K)})
 
-# 동일한 칸으로 들어가는 건 따로 처리해줘야 한다
+# # 동일한 칸으로 들어가는 건 따로 처리해줘야 한다
 
-def move_shark():
-	# 2. 상어가 각자의 우선순위에 알맞는 위치로 이동
-	for num in sorted(shark_now): # 각 살아있는 상어에 대해
-		x, y = shark_now[num] # 현재 위치
-		d = shark_d[num] # 현재 방향
-		move = False
-		# 우선순위 방향대로 빈 공간을 살핀다
-		for i in range(4):
-			n_d = priority[num][d-1][i]
-			# print((num, d, n_d))
-			nx, ny = x + directions[n_d-1][0], y + directions[n_d-1][1]
-			# 만약 n_d 방향에 빈 칸이 있다면
-			if 0 <= nx < N and 0 <= ny < N and (nx, ny) not in shark_scent:
-				shark_now[num] = (nx, ny)
-				# 방향을 바꿔준다
-				shark_d[num] = n_d
-				move = True
-				break
-		# 주변에 빈 칸이 없었다면
-		if not move:
-			for i in range(4):
-				n_d = priority[num][d-1][i]
-				nx, ny = x + directions[n_d-1][0], y + directions[n_d-1][1]
-				if 0 <= nx < N and 0 <= ny < N and (nx, ny) in shark_scent:
-					if shark_scent[(nx, ny)][0] == num:
-						shark_now[num] = (nx, ny)
-						shark_d[num] = n_d
-						move = True
-						break
+# def move_shark():
+# 	# 2. 상어가 각자의 우선순위에 알맞는 위치로 이동
+# 	for num in sorted(shark_now): # 각 살아있는 상어에 대해
+# 		x, y = shark_now[num] # 현재 위치
+# 		d = shark_d[num] # 현재 방향
+# 		move = False
+# 		# 우선순위 방향대로 빈 공간을 살핀다
+# 		for i in range(4):
+# 			n_d = priority[num][d-1][i]
+# 			# print((num, d, n_d))
+# 			nx, ny = x + directions[n_d-1][0], y + directions[n_d-1][1]
+# 			# 만약 n_d 방향에 빈 칸이 있다면
+# 			if 0 <= nx < N and 0 <= ny < N and (nx, ny) not in shark_scent:
+# 				shark_now[num] = (nx, ny)
+# 				# 방향을 바꿔준다
+# 				shark_d[num] = n_d
+# 				move = True
+# 				break
+# 		# 주변에 빈 칸이 없었다면
+# 		if not move:
+# 			for i in range(4):
+# 				n_d = priority[num][d-1][i]
+# 				nx, ny = x + directions[n_d-1][0], y + directions[n_d-1][1]
+# 				if 0 <= nx < N and 0 <= ny < N and (nx, ny) in shark_scent:
+# 					if shark_scent[(nx, ny)][0] == num:
+# 						shark_now[num] = (nx, ny)
+# 						shark_d[num] = n_d
+# 						move = True
+# 						break
 
-def chk_same():
-	del_lst = []
-	for least in sorted(shark_now):
-		for big in range(least+1, M+1):
-			if big not in shark_now:
-				continue
-			else: 
-				if shark_now[least] == shark_now[big]:
-					del_lst.append(big)
-	for i in del_lst:
-		shark_now.pop(i)
+# def chk_same():
+# 	del_lst = []
+# 	for least in sorted(shark_now):
+# 		for big in range(least+1, M+1):
+# 			if big not in shark_now:
+# 				continue
+# 			else: 
+# 				if shark_now[least] == shark_now[big]:
+# 					del_lst.append(big)
+# 	for i in set(del_lst):
+# 		shark_now.pop(i)
 
-# 상어가 1마리인지 확인
-def chk_one():
-	if len(shark_now) == 1:
-		return True
-	return False
+# # 상어가 1마리인지 확인
+# def chk_one():
+# 	if len(shark_now) == 1:
+# 		return True
+# 	return False
 
-def main():
-	# 풀이
-	# 1. 최초 위치에 냄새를 뿌린다
-	for t in range(1, 1001):
-		move_shark()
-		chk_same()
-		chk = chk_one()
-		update_scent()
-		if chk:
-			return t
-	return False
+# def main():
+# 	# 풀이
+# 	# 1. 최초 위치에 냄새를 뿌린다
+# 	for t in range(1, 1001):
+# 		move_shark()
+# 		chk_same()
+# 		chk = chk_one()
+# 		update_scent()
+# 		if chk:
+# 			return t
+# 	return False
 
-if __name__ == "__main__":
-	chk = False
+# if __name__ == "__main__":
+# 	chk = False
     
-	shark_now = dict()
-	shark_scent = dict() # (x, y): (number, k)
-	directions = [(0, -1), (0, 1), (-1, 0), (1, 0)] # (0~3)
+# 	shark_now = dict()
+# 	shark_scent = dict() # (x, y): (number, k)
+# 	directions = [(0, -1), (0, 1), (-1, 0), (1, 0)] # (0~3)
 
-	N, M, K = map(int, input().split())
-	grid = [list(map(int, input().split())) for _ in range(N)]
-	shark_d = [0] + list(map(int, input().split()))
-	priority = dict()
-	for num in range(1, M+1):
-		data = []
-		for i in range(4):
-			data.append(list(map(int, input().split())))
-		priority.update({num: data})
+# 	N, M, K = map(int, input().split())
+# 	grid = [list(map(int, input().split())) for _ in range(N)]
+# 	shark_d = [0] + list(map(int, input().split()))
+# 	priority = dict()
+# 	for num in range(1, M+1):
+# 		data = []
+# 		for i in range(4):
+# 			data.append(list(map(int, input().split())))
+# 		priority.update({num: data})
 		
 
-	for i in range(N):
-		for j in range(N):
-			if 1 <= grid[i][j] <= M:
-				shark_scent.update({(j, i): (grid[i][j], K)})
-				shark_now.update({grid[i][j]: (j, i)})
-	chk = main()
-	if chk:
-		print(chk)
-	else:
-		print(-1)
+# 	for i in range(N):
+# 		for j in range(N):
+# 			if 1 <= grid[i][j] <= M:
+# 				shark_scent.update({(j, i): (grid[i][j], K)})
+# 				shark_now.update({grid[i][j]: (j, i)})
+# 	chk = main()
+# 	if chk:
+# 		print(chk)
+# 	else:
+# 		print(-1)
+
+# BOJ 11047
+
+# N, K = map(int, input().split())
+
+# coins = [int(input()) for _ in range(N)]
+
+# coins = sorted(coins, reverse=True)
+
+# temp = K
+# ans = 0
+# for now in coins:
+#     if temp >= now:
+#         ans += temp // now
+#         temp = temp % now
+
+# print(ans)
+
+# BOJ - 2720
+
+# T = int(input())
+
+# for test_case in range(T):
+#     change = int(input())
+#     res = [0] * 4
+#     while change:
+#         if change >= 25:
+#             res[0] += change // 25
+#             change %= 25
+#         elif change >= 10:
+#             res[1] += change // 10
+#             change %= 10
+#         elif change >= 5:
+#             res[2] += change // 5
+#             change %= 5
+#         else:
+#             res[3] += change
+#             change = 0
+#     for i in range(4):
+#         print(res[i], end=' ')
+#     print()
+
+# BOJ - 10162
+# T = int(input())
+# res = [0] * 3
+# flag = False
+
+# while not flag:
+#     if T >= 300:
+#         res[0] += T // 300
+#         T %= 300
+#     elif T >= 60:
+#         res[1] += T // 60
+#         T %= 60
+#     else:
+#         res[2] += T // 10
+#         T %= 10
+#         flag = True
+        
+# if T > 0:
+#     print(-1)
+# else:
+#     for i in range(3):
+#         print(res[i], end=' ')
+
+# BOJ - 1541
+# data = input().split('-')
+# res = []
+
+# for small in data:
+#     if '+' in small:
+#         temp_res = small.split('+')
+#         temp_ans = int(temp_res[0])
+#         for i in range(1, len(temp_res)):
+#             temp_ans += int(temp_res[i])
+#         res.append(temp_ans)
+#     else:
+#         res.append(int(small))
+
+# ans = res[0]
+# for i in range(1, len(res)):
+#     ans -= res[i]
+# print(ans)
+
+# SWEA 1859
+# T = int(input())
+
+# for test_case in range(1, T+1):
+#     N = int(input())
+#     data = list(map(int, input().split()))[:N]
+    
+#     stack = []
+#     ans = 0
+#     key = N-1
+    
+#     for i in range(N-2, -1, -1):
+#         # 만약 범위 내에 있고, 앞의 값이 더 크다면 key를 변경
+#         if data[i] > data[key]:
+#             key = i
+#         else:
+#             ans += (data[key] - data[i])
+#     print(f'#{test_case} {ans}')
+
+# SWEA 1206
+# for test_case in range(1, 11):
+#     apt_len = int(input())
+#     apt_lst = list(map(int, input().split()))
+    
+#     ans = 0
+    
+#     for i in range(2, apt_len - 2):
+#         mx_neighbor = 0
+#         flag = True
+        
+#         # 이웃들을 돌면서 가장 높은 층수인지 확인
+#         for j in [-2, -1, 1, 2]:
+#             if apt_lst[i+j] > apt_lst[i]:
+#                 flag = False
+#                 break
+            
+#             else:
+#                 if apt_lst[i+j] > mx_neighbor:
+#                     mx_neighbor = apt_lst[i+j]
+        
+#         # 이웃한 아파트 중 가장 높은 층수를 가진 것 뺀다
+#         if flag:
+#             ans += apt_lst[i] - mx_neighbor
+    
+#     print(f'#{test_case} {ans}')
+
+# BOJ - 1026
+
+# N = int(input())
+# A = list(map(int, input().split()))[:N]
+# B = list(map(int, input().split()))[:N]
+
+# A = sorted(A)
+# B = sorted(B, reverse = True)
+
+# ans = 0
+
+# for i in range(N):
+#     ans += A[i] * B[i]
+
+# print(ans)
+
+# BOJ - 2217
+# N = int(input())
+# data = []
+# for _ in range(N):
+#     data.append(int(input()))
+
+# data = sorted(data, reverse=True)
+# ans = data[0]
+
+# for i in range(1, N):
+#     temp = data[i]
+#     # 십시일반 케이스를 고려하지 못했다
+#     if temp * (i+1) > ans:
+#         ans = temp * (i+1)
+# print(ans)
+
+# SWEA 2001
+# T = int(input())
+
+# for test_case in range(1, T+1):
+#     N, M = map(int, input().split())
+#     array = []
+#     for _ in range(N):
+#         array.append(list(map(int, input().split())))
+    
+#     ans = 0
+#     for oy in range(N-M+1):
+#         for ox in range(N-M+1):
+#             temp = 0
+#             for dy in range(M):
+#                 temp += sum(array[oy+dy][ox:ox+M])
+#             if temp > ans:
+#                 ans = temp
+#     print(f'#{test_case} {ans}')
+
+# SWEA 1954
+# T = int(input())
+
+# directions = [(1, 0), (0, 1), (-1, 0), (0, -1)] # x, y
+# for test_case in range(1, T+1):
+#     N = int(input())
+#     grid = [[0] * N for _ in range(N)]
+#     # 최초 방향
+#     d = 0
+#     dx, dy = directions[d]
+#     # 최초 좌표
+#     y, x = 0, 0
+#     now = 1
+#     grid[y][x] = now
+#     # 모든 방향 돌았는지 확인
+#     flag = 0
+#     while True:
+#         ny, nx = y + dy, x + dx
+#         if 0 <= ny < N and 0 <= nx < N and grid[ny][nx] == 0:
+#             now += 1
+#             grid[ny][nx] = now
+#             y, x = ny, nx
+#             flag = 0
+#         else:
+#             d = (d+1) % 4
+#             dx, dy = directions[d]
+#             flag += 1
+#             if flag >= 4:
+#                 break
+#     print(f'#{test_case}')
+#     for i in range(N):
+#         print(*grid[i])
+
+# SWEA 1926
+# N = int(input())
+
+# for num in range(1, N+1):
+#     s = str(num)
+#     cnt = 0
+#     for i in s:
+#         if i == '3' or i == '6' or i == '9':
+#             cnt += 1
+#     if cnt > 0:
+#         s = cnt * '-'
+#     print(s, end= ' ')
+
+# SWEA 1984
+# T = int(input())
+
+# for test_case in range(1, T+1):
+#     array = list(map(int, input().split()))
+
+#     array.sort()
+#     array = array[1:9]
+#     s = (sum(array) / 8)
+#     ans = round(s)
+#     print(f'#{test_case} {ans}')
+
+# SWEA 1974
+# T = int(input())
+
+# for test_case in range(1, T+1):
+#     grid = []
+#     for _ in range(9):
+#         grid.append(list(map(int, input().split())))
+#     flag = True
+#     # 큐브 확인
+#     for oy in range(0, 9, 3):
+#         for ox in range(0, 9, 3):
+#             chk_lst = []
+#             for dy in range(0, 3):
+#                 chk_lst += grid[oy+dy][ox:ox+3]
+#             if len(set(chk_lst)) < 9:
+#                 flag = False
+#                 break
+#         if not flag:
+#             break
+#     if not flag:
+#         print(f'#{test_case} 0')
+#         continue
+    
+#     for y in range(9):
+#         if len(set(grid[y])) < 9:
+#             flag = False
+#             break
+#     if not flag:
+#         print(f'#{test_case} 0')
+#         continue
+    
+#     for x in range(9):
+#         chk_lst = []
+#         for y in range(9):
+#             chk_lst.append(grid[y][x])
+#         if len(set(chk_lst)) < 9:
+#             flag = False
+#             break
+#     if not flag:
+#         print(f'#{test_case} 0')
+#         continue
+#     print(f'#{test_case} 1')
+
+# SWEA 4874
+# T = int(input())
+
+# for test_case in range(1, T+1):
+#     data = input().split()
+    
+#     # 입력된 코드를 하나씩 돌며 숫자는 스택에 저장
+#     stack = []
+#     res = 'error'
+    
+#     for obj in data:
+#         if obj.isdigit():
+#             stack.append(int(obj))
+#         elif obj == '.':
+#             if len(stack) > 1:
+#                 res = 'error'
+#             else:
+#                 res = stack[-1]
+#             break
+#         # 연산자일 때
+#         else:
+#             # 만약 stack에 피연산자 2개가 없다면
+#             if len(stack) < 2:
+#                 res = 'error'
+#                 break
+#             else:
+#                 b = stack.pop()
+#                 a = stack.pop()
+#                 if obj == '+':
+#                     stack.append(a+b)
+#                 elif obj == '-':
+#                     stack.append(a-b)
+#                 elif obj == '*':
+#                     stack.append(a*b)
+#                 elif obj == '/':
+#                     stack.append(a//b)
+#                 else:
+#                     res = 'error'
+#                     break
+#     print(f'#{test_case} {res}')
+
+# SWEA 2005
+# T = int(input())
+
+# for test_case in range(1, T+1):
+#     N = int(input())
+#     grid = [[0] * N for _ in range(N)]
+    
+#     print(f'#{test_case}')
+    
+#     grid[0][0] = 1
+#     print(grid[0][0])
+#     for level in range(1, N):
+#         for each in range(level+1):
+#             value = 0
+#             left = each - 1
+#             right = each
+#             if 1 <= level <= N:
+#                 if 0 <= left < N:
+#                     value += grid[level-1][left]
+#                 if 0 <= right < N:
+#                     value += grid[level-1][right]
+#             grid[level][each] = value
+#             print(value, end=' ')
+#         print()
+
+# SWEA 1989
+# T = int(input())
+# for test_case in range(1, T+1):
+#     origin = input()
+#     back = origin[::-1]
+#     res = 0
+#     if origin == back:
+#         res = 1
+#     else:
+#         res = 0
+#     print(f'#{test_case} {res}')
+
+# SWEA 4866
+# T = int(input())
+# for test_case in range(1, T+1):
+#     data = input()
+#     stack = []
+#     res = 1
+#     for each in data:
+#         if each == '(' or each == '{' or each == '[':
+#             stack.append(each)
+#         elif each == ')':
+#             if stack and stack[-1] == '(':
+#                 stack.pop()
+#             else:
+#                 res = 0
+#                 break
+#         elif each == '}':
+#             if stack and stack[-1] == '{':
+#                 stack.pop()
+#             else:
+#                 res = 0
+#                 break
+#         elif each == ']':
+#             if stack and stack[-1] == '[':
+#                 stack.pop()
+#             else:
+#                 res = 0
+#                 break
+#     if stack:
+#         res = 0
+#     print(f'#{test_case} {res}')
+
+# SWEA 1979
+# def dfs(x, y, d, length):
+#     global ans, flag
+#     dx, dy = directions[d]
+#     nx, ny = x + dx, y + dy
+#     if 0 <= nx < N and 0 <= ny < N and puzzle[ny][nx] == 1:
+#         # 길이 추가
+#         length += 1
+#         dfs(nx, ny, d, length)
+#     # 만약 다음 칸이 0이거나 범위 밖이고, 현재 길이가 K라면
+#     else:
+#         if length == K:
+#             ans += 1
+#             flag = True
+#         return
+
+# directions = [(1, 0), (0, 1)]
+# T = int(input())
+# for test_case in range(1, T+1):
+#     N, K = map(int, input().split())
+#     ans = 0
+#     puzzle = []
+#     for _ in range(N):
+#         puzzle.append(list(map(int, input().split())))
+    
+#     for y in range(N):
+#         for x in range(N):
+#             flag = False
+#             if puzzle[y][x] == 1:
+#                 if y-1 < 0 or puzzle[y-1][x] == 0:
+#                     dfs(x, y, 1, 1)
+#                 if x-1 < 0 or puzzle[y][x-1] == 0:
+#                     dfs(x, y, 0, 1)
+#     print(f'#{test_case} {ans}')
+
+# SWEA 1244
+# def dfs(cnt):
+#     global ans
+#     if cnt == N:
+#         ans = max(ans, int(''.join(lst)))
+#         return
+    
+#     for i in range(0, L-1):
+#         for j in range(i+1, L):
+#             lst[i], lst[j] = lst[j], lst[i]
+            
+#             # 가지치기
+#             chk = int(''.join(lst))
+#             if (cnt, chk) not in set(v):
+#                 dfs(cnt+1)
+#                 v.append((cnt, chk))
+                
+#             lst[i], lst[j] = lst[j], lst[i]
+            
+# T = int(input())
+
+# for test_case in range(1, T+1):
+#     data = input().split()
+#     lst = list(data[0])
+#     N = int(data[1])
+#     L = len(lst)
+#     ans = 0
+#     v = []
+    
+#     dfs(0)
+#     print(f'#{test_case} {ans}')
+
+# SWEA 1208
+# T = 10
+
+# for test_case in range(1, T+1):
+#     # 덤프 횟수 및 박스 높이
+#     N = int(input())
+#     lst = list(map(int, input().split()))
+    
+#     lst.sort()
+    
+#     for i in range(N):
+#         lst[-1] -= 1
+#         lst[0] += 1
+#         # 각 값을 앞, 뒤의 값과 비교
+#         for j in range(1, len(lst)):
+#             if lst[0] <= lst[j]:
+#                 lst[0], lst[j-1] = lst[j-1], lst[0]
+#                 break
+                
+#         for j in range(len(lst)-2, -1, -1):
+#             if lst[-1] >= lst[j]:
+#                 lst[-1], lst[j+1] = lst[j+1], lst[-1]
+#                 break
+                
+#         if (lst[-1] - lst[0]) <= 1:
+#             break
+#     ans = lst[-1] - lst[0]
+#     print(f'#{test_case} {ans}')
+
+# SWEA 5215
+
+# def dfs(start, Kn, Tn, a):
+#     global ans
+#
+#     # 조건이 있어야 한다
+#     if start == N:
+#         ans = max(ans, Tn)
+#         return
+#
+#     for i in range(start, N):
+#         if (L - Kn) >= lst[i][1]:
+#             a.append(i)
+#             Kn += lst[i][1]
+#             Tn += lst[i][0]
+#             dfs(i+1, Kn, Tn, a)
+#             a.pop()
+#             Kn -= lst[i][1]
+#             Tn -= lst[i][0]
+#
+# T = int(input())
+#
+# for test_case in range(1, T+1):
+#
+#     N, L = map(int, input().split())
+#     lst = []
+#     for i in range(N):
+#         Ti, Ki = map(int, input().split())
+#         lst.append((Ti, Ki))
+#     lst = sorted(lst, key=lambda x: (-x[1], -x[0]))
+#
+#     ans = 0
+#
+#     dfs(0, 0, 0, [])
+#     print(f'#{test_case} {ans}')
+
+# SWEA 1209
+
+# for _ in range(1, 11):
+#     test_case = int(input())
+#     grid = []
+#     ans = 0
+#     for i in range(100):
+#         grid.append(list(map(int, input().split())))
+#
+#     # 행의 합
+#     for i in range(100):
+#         temp = sum(grid[i])
+#         if temp > ans:
+#             ans = temp
+#
+#     # 열의 합
+#     for x in range(100):
+#         temp = 0
+#         for y in range(100):
+#             temp += grid[y][x]
+#         if temp > ans:
+#             ans = temp
+#
+#     # 대각선의 합
+#     x, y, l2r = 0, 0, 0
+#     while 0 <= x < 100 and 0 <= y < 100:
+#         l2r += grid[y][x]
+#         x += 1
+#         y += 1
+#     if l2r > ans:
+#         ans = l2r
+#
+#     x, y, r2l = 99, 0, 0
+#     while 0 <= x < 100 and 0 <= y < 100:
+#         r2l += grid[y][x]
+#         x -= 1
+#         y += 1
+#     if r2l > ans:
+#         ans = r2l
+#     print(f'#{test_case} {ans}')
+
+# SWEA 1983
+
+# T = int(input())
+#
+# for test_case in range(1, T+1):
+#     N, K = map(int, input().split())
+#     same = N // 10
+#
+#     score_dict = dict()
+#     grade_dict = dict()
+#
+#     for i in range(1, N+1):
+#         score_dict.update({i: list(map(int, input().split()))})
+#     for i in range(1, N+1):
+#         score_dict[i].append((score_dict[i][0] * 35 + score_dict[i][1] * 45 + score_dict[i][2] * 20) / 100)
+#
+#     lst = sorted(score_dict.items(), key=lambda item: -item[1][3])
+#
+#     point = 0
+#     cnt = 0
+#     grade_lst = ['A+', 'A0', 'A-', 'B+', 'B0', 'B-', 'C+', 'C0', 'C-', 'D0']
+#
+#     for i in range(N):
+#         cnt += 1
+#         grade_dict.update({lst[i][0]:grade_lst[point]})
+#         if cnt == same:
+#             point += 1
+#             cnt = 0
+#     print(f'#{test_case} {grade_dict[K]}')
+
+# SWEA 2805
+# T = int(input())
+#
+# for test_case in range(1, T+1):
+#     N = int(input())
+#     grid = []
+#     for _ in range(N):
+#         data = list(input())
+#         grid.append(list(map(int, data)))
+#     # 중앙선 구하기
+#     middle = N // 2
+#     ans = 0
+#     for y in range(N):
+#         l = middle - abs(middle - y)
+#         temp = 0
+#         for x in range(middle-l, middle+l+1):
+#             temp += grid[y][x]
+#         ans += temp
+#     print(f'#{test_case} {ans}')
+
+# SWEA 1225
+# T = 10
+# for test_case in range(1, T+1):
+#     t = int(input())
+#     code = list(map(int, input().split()))
+#     end = False
+#
+#     while True:
+#         for i in range(1, 6):
+#             temp = code[0] - i
+#             if temp <= 0:
+#                 temp = 0
+#             code = code[1:] + [temp]
+#             if temp <= 0:
+#                 end = True
+#                 break
+#         if end:
+#             break
+#     print(f'#{test_case}', end=' ')
+#     for i in range(8):
+#         print(code[i], end=' ')
+#     print()
+
+# SWEA 1860
+# T = int(input())
+#
+# for test_case in range(1, T+1):
+#     N, M, K = map(int, input().split())
+#     customers = list(map(int, input().split()))
+#     customers.sort()
+#     flag = True
+#     cnt = 0
+#
+#     for i in range(N):
+#         ea = (customers[i] // M) * K
+#         if (ea - cnt) < 1:
+#             flag = False
+#             break
+#         cnt += 1
+#
+#     print(f'#{test_case}', end=' ')
+#     if flag:
+#         print("Possible")
+#     else:
+#         print("Impossible")
+
+# SWEA 1873
+# T = int(input())
+#
+# for test_case in range(1, T+1):
+#     H, W = map(int, input().split())
+#     grid = []
+#     for i in range(H):
+#         grid.append(list(input()))
+#
+#     N = int(input())
+#     command = input()
+#
+#     # 현재 위치 파악하기
+#     tx, ty, d = 0, 0, 0
+#     for i in range(H):
+#         for j in range(W):
+#             if grid[i][j] not in ('>', '<', '^', 'v'):
+#                 continue
+#             else:
+#                 ty, tx = i, j
+#                 if grid[i][j] == '>':
+#                     d = 1
+#                 elif grid[i][j] == 'v':
+#                     d = 2
+#                 elif grid[i][j] == '<':
+#                     d = 3
+#                 else:
+#                     d = 0
+#                 break
+#
+#     directions = [(0, -1), (1, 0), (0, 1), (-1, 0)] # x, y
+#
+#     # 명령 수행
+#     for i in range(N):
+#         cmd = command[i]
+#         # U D L R 구현
+#         if cmd == 'U':
+#             nx, ny = tx + directions[0][0], ty + directions[0][1]
+#             if 0 <= nx < W and 0 <= ny < H and grid[ny][nx] == '.':
+#                 grid[ny][nx] = '^'
+#                 grid[ty][tx] = '.'
+#                 ty, tx = ny, nx
+#             else:
+#                 grid[ty][tx] = '^'
+#             d = 0
+#
+#         if cmd == 'R':
+#             nx, ny = tx + directions[1][0], ty + directions[1][1]
+#             if 0 <= nx < W and 0 <= ny < H and grid[ny][nx] == '.':
+#                 grid[ny][nx] = '>'
+#                 grid[ty][tx] = '.'
+#                 ty, tx = ny, nx
+#             else:
+#                 grid[ty][tx] = '>'
+#             d = 1
+#
+#         if cmd == 'D':
+#             nx, ny = tx + directions[2][0], ty + directions[2][1]
+#             if 0 <= nx < W and 0 <= ny < H and grid[ny][nx] == '.':
+#                 grid[ny][nx] = 'v'
+#                 grid[ty][tx] = '.'
+#                 ty, tx = ny, nx
+#             else:
+#                 grid[ty][tx] = 'v'
+#             d = 2
+#
+#         if cmd == 'L':
+#             nx, ny = tx + directions[3][0], ty + directions[3][1]
+#             if 0 <= nx < W and 0 <= ny < H and grid[ny][nx] == '.':
+#                 grid[ny][nx] = '<'
+#                 grid[ty][tx] = '.'
+#                 ty, tx = ny, nx
+#             else:
+#                 grid[ty][tx] = '<'
+#             d = 3
+#
+#         # 포탄 발사 구현
+#         if cmd == 'S':
+#             # 포탄의 방향은 d 방향
+#             # 포탄이 *에 닿으면: *를 .로 바꿔야
+#             # #에 닿으면 종료
+#             # 닿거나 범위를 벗어날 때까지 반복
+#             x, y = tx, ty
+#             while True:
+#                 nx, ny = x + directions[d][0], y + directions[d][1]
+#                 if 0 <= nx < W and 0 <= ny < H:
+#                     if grid[ny][nx] == '*':
+#                         grid[ny][nx] = '.'
+#                         break
+#                     elif grid[ny][nx] == '#':
+#                         break
+#                     x, y = nx, ny
+#                 else:
+#                     break
+#     print(f'#{test_case}', end=' ')
+#     for i in range(H):
+#         for j in range(W):
+#             print(grid[i][j], end='')
+#         print()
+
+# SWEA 2814
+
+# def dfs(start, visited):
+#     global ans
+#     # 만약 더 이상 갈 수 있는 곳이 없다면 - 끝났다면
+#     flag = False
+#     for nxt in set(grid[start]):
+#         if nxt not in set(visited):
+#             flag = True
+#             dfs(nxt, visited + [nxt])
+#
+#     if not flag:
+#         ans = max(ans, len(visited))
+#
+# T = int(input())
+#
+# for test_case in range(1, T+1):
+#     N, M = map(int, input().split())
+#     # 번호 1부터 시작
+#     grid = [[] for _ in range(N+1)]
+#     for _ in range(M):
+#         a, b = map(int, input().split())
+#         grid[a].append(b)
+#         grid[b].append(a)
+#
+#     ans = 1
+#
+#     for start in range(1, N+1):
+#         dfs(start, [])
+#     print(f'#{test_case} {ans}')
+
+# SWEA 6190
+
+# T = int(input())
+# for test_case in range(1, T+1):
+#     N = int(input())
+#     lst = list(map(int, input().split()))
+#
+#     ans = -1
+#
+#     for a in range(N-1):
+#         for b in range(a+1, N):
+#             # 단조 확인
+#             flag = True
+#             temp = lst[a] * lst[b]
+#             st = str(temp)
+#             for i in range(1, len(st)):
+#                 if st[i-1] > st[i]:
+#                     flag = False
+#                     break
+#             if not flag:
+#                 continue
+#             ans = max(ans, temp)
+#     print(f'#{test_case} {ans}')
+
+# SWEA 1216
+# def is_pal(arr, leng):
+#     found = False
+#     for lst in arr:
+#         for start in range(N-leng+1):
+#
+#             if lst[start: start+leng] == lst[start: start+leng][::-1]:
+#                 found = True
+#                 break
+#         if found:
+#             break
+#     if found:
+#         return True
+#     return False
+#
+# T = 10
+# for test_case in range(1, T+1):
+#     num = int(input())
+#     N = 100
+#     grid = []
+#     for _ in range(N):
+#         grid.append(list(input()))
+#
+#     grid2 = [[0] * N for _ in range(N)]
+#
+#     for y in range(N):
+#         for x in range(N):
+#             grid2[N-x-1][y] = grid[y][x]
+#     # print(grid2)
+#
+#     ans = 0
+#
+#     # leng을 하나씩 줄인다
+#     for leng in range(N, 1, -1):
+#         if is_pal(grid, leng) or is_pal(grid2,leng):
+#             ans = leng
+#             break
+#     print(f'#{num} {ans}')
+
+# SWEA 1213
+# T = 10
+# for test_case in range(1, T+1):
+#     num = int(input())
+#     key = input()
+#     s = input()
+#     key_leng = len(key)
+#     s_leng = len(s)
+#     ans = 0
+#     for start in range(s_leng - key_leng + 1):
+#         if s[start: start + key_leng] == key:
+#             ans += 1
+#     print(f'#{num} {ans}')
+
+# SWEA 1289
+# def switch(now, num):
+#     if now[num] == '1':
+#         now = now[:num] + '0' * (leng - num)
+#     else:
+#         now = now[:num] + '1' * (leng - num)
+#     return now
+#
+# T = int(input())
+# for test_case in range(1, T + 1):
+#     origin = input()
+#     leng = len(origin)
+#     now = '0' * leng
+#     ans = 0
+#
+#     # 각 자리를 비교
+#     for i in range(leng):
+#         if origin[i] == now[i]:
+#             continue
+#         else:
+#             now = switch(now, i)
+#             ans += 1
+#     print(f'#{test_case} {ans}')
+
+# SWEA 1215
+# def check_pal(lst, start):
+#     i, j = start, start + leng - 1
+#     while i < j:
+#         if lst[i] != lst[j]:
+#             return False
+#         i += 1
+#         j -= 1
+#     return True
+#
+# T = 10
+# for test_case in range(1, T+1):
+#     N = 8
+#     leng = int(input())
+#     arr = []
+#     ans = 0
+#
+#     for _ in range(N):
+#         arr.append(list(input()))
+#
+#     # 회전
+#     new_arr = [[''] * N for _ in range(N)]
+#     for y in range(N):
+#         for x in range(N):
+#             new_arr[x][y] = arr[N-y-1][x]
+#
+#     # arr에서 회문 찾기
+#     for lst in arr:
+#         for start in range(N-leng+1):
+#             if check_pal(lst, start):
+#                 ans += 1
+#     for lst in new_arr:
+#         for start in range(N-leng+1):
+#             if check_pal(lst, start):
+#                 ans += 1
+#     print(f'#{test_case} {ans}')
+
+# SWEA 4831
+
+# T = int(input())
+# for test_case in range(1, T+1):
+#     K, N, M = map(int, input().split())
+#     charger = list(map(int, input().split()))
+#
+#     current = 0
+#     ans = 0
+#
+#     while current < N:
+#         flag = False
+#         for step in range(K, 0, -1):
+#             if (current + step) in set(charger):
+#                 current += step
+#                 ans += 1
+#                 flag = True
+#                 break
+#             elif (current + step) >= N:
+#                 current += step
+#                 flag = True
+#                 break
+#         if not flag:
+#             ans = 0
+#             break
+#     print(f'#{test_case} {ans}')
+
+# SWEA 4615
+
+# def dfs(ix, iy, c, d):
+#     if 0 < ix <= N and 0 < iy <= N:
+#         if grid[iy][ix] == c:
+#             return True
+#         elif grid[iy][ix] == 0:
+#             return False
+#         else:
+#             nx, ny = ix + directions[d][0], iy + directions[d][1]
+#             if dfs(nx, ny, c, d):
+#                 grid[iy][ix] = c
+#                 return True
+#             return None
+#     else:
+#         return False
+#
+# directions = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
+#
+# T = int(input())
+# for test_case in range(1, T+1):
+#     N, M = map(int, input().split())
+#     grid = [[0] * (N+1) for _ in range(N+1)]
+#     black, white = 0, 0
+#
+#     mid = N // 2
+#     grid[mid][mid] = 2
+#     grid[mid][mid+1] = 1
+#     grid[mid+1][mid] = 1
+#     grid[mid+1][mid+1] = 2
+#     command = []
+#     for _ in range(M):
+#         command.append(tuple(map(int, input().split())))
+#
+#     # command 하나씩 읽으며 진행
+#     for i in range(M):
+#         x, y, c = command[i]
+#         grid[y][x] = c
+#         # 여기서 for문과 nx, ny를 지정해주자
+#         for d in range(8):
+#             nx, ny = x + directions[d][0], y + directions[d][1]
+#             if 0 < nx <= N and 0 < ny <= N:
+#                 dfs(nx, ny, c, d)
+#     for i in range(1, N+1):
+#         for j in range(1, N+1):
+#             if grid[i][j] == 1:
+#                 black += 1
+#             elif grid[i][j] == 2:
+#                 white += 1
+#     print(f'#{test_case} {black} {white}')
+
+# SWEA 11315
+# directions = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
+#
+#
+# T = int(input())
+# for test_case in range(1, T+1):
+#     N = int(input())
+#     grid = []
+#     found = False
+#     stone = []
+#     for _ in range(N):
+#         grid.append(list(input()))
+#     for y in range(N):
+#         for x in range(N):
+#             if grid[y][x] == 'o':
+#                 stone.append((x, y))
+#     for each in stone:
+#         x, y = each
+#
+#         for d in range(8):
+#             cnt = 1
+#             while True:
+#                 nx, ny = x + directions[d][0], y + directions[d][1]
+#                 if 0 <= nx < N and 0 <= ny < N:
+#                     if (nx, ny) in set(stone):
+#                         cnt += 1
+#                         x, y = nx, ny
+#                     else:
+#                         break
+#                 else:
+#                     break
+#             if cnt >= 5:
+#                 found = True
+#                 break
+#         if found:
+#             break
+#     if found:
+#         print(f'#{test_case} YES')
+#     else:
+#         print(f'#{test_case} NO')
+
+# SWEA 6485
+# T = int(input())
+# for test_case in range(1, T+1):
+#     N = int(input())
+#     bus = [[]]
+#     for i in range(1, N+1):
+#         bus.append(list(map(int, input().split())))
+#     P = int(input())
+#     stop = dict()
+#     for j in range(1, P+1):
+#         stop.update({j: [int(input()), 0]})
+#
+#     # 모든 입력 받았음
+#     for j in range(1, P+1):
+#         s = stop[j][0]
+#         for i in range(1, N+1):
+#             a, b = bus[i]
+#             if a <= s <= b:
+#                 stop[j][1] += 1
+#
+#     print(f'#{test_case}', end=' ')
+#     for j in range(1, P+1):
+#         print(stop[j][1], end=' ')
+#     print()
+
+# SWEA 1217
+# T = 10
+# for test_case in range(1, T+1):
+#     t = int(input())
+#     N, M = map(int, input().split())
+#     ans = 1
+#     for i in range(M):
+#         ans *= N
+#     print(f'#{t} {ans}')
+
+# SWEA 2817
+
+# def combinations(m, start, a):
+#     global ans, chk
+#     if len(a) == m:
+#         if sum(a) <= K:
+#             chk = True
+#             if sum(a) == K:
+#                 ans += 1
+#         return
+#     for i in range(start, N):
+#         combinations(m, i + 1, a + [A[i]])
+#
+# T = int(input())
+# for test_case in range(1, T+1):
+#     N, K = map(int, input().split())
+#     A = list(map(int, input().split()))
+#     A.sort()
+#     ans = 0
+#     for m in range(1, N+1):
+#         chk = False
+#         combinations(m, 0, [])
+#         if not chk:
+#             break
+#     print(f'#{test_case} {ans}')
+
+# SWEA 2806
+# def binary_search(key, l, r):
+#     # d는 방향
+#     d = 1
+#     while l <= r:
+#         mid = (l + r) // 2
+#         if key == A[mid]:
+#             return True
+#         elif key < A[mid]:
+#             if d == 0:
+#                 return False
+#             else:
+#                 r = mid - 1
+#                 d = 0
+#                 continue
+#         else:
+#             if d == 2:
+#                 return False
+#             else:
+#                 l = mid + 1
+#                 d = 2
+#                 continue
+#     return False
+#
+# T = int(input())
+# for test_case in range(1, T+1):
+#     N, M = map(int, input().split())
+#     A = list(map(int, input().split()))
+#     A.sort()
+#     B = list(map(int, input().split()))
+#     ans = 0
+#
+#     for i in range(M):
+#         if binary_search(B[i], 0, N-1):
+#             ans += 1
+#     print(f'#{test_case} {ans}')
+
+# SWEA 1220
+# T = 10
+# for test_case in range(1, T+1):
+#     leng = int(input())
+#     table = []
+#     ans = 0
+#     for i in range(leng):
+#         table.append(list(map(int, input().split())))
+#
+#     for y in range(leng):
+#         for x in range(leng):
+#             # 2를 올린다
+#             if table[y][x] == 2:
+#                 cy = y
+#                 while True:
+#                     ny = cy - 1
+#                     if ny < 0:
+#                         table[cy][x] = 0
+#                         break
+#                     else:
+#                         if not table[ny][x]:
+#                             table[ny][x] = 2
+#                             table[cy][x] = 0
+#                             cy = ny
+#                         else:
+#                             break
+#             if table[leng-y-1][x] == 1:
+#                 cy = leng-y-1
+#                 while True:
+#                     ny = cy + 1
+#                     if ny >= leng:
+#                         table[cy][x] = 0
+#                         break
+#                     else:
+#                         if not table[ny][x]:
+#                             table[ny][x] = 1
+#                             table[cy][x] = 0
+#                             cy = ny
+#                         else:
+#                             break
+#
+#     # 열별로 돌아가면서 묶음 확인
+#     for x in range(leng):
+#         for y in range(leng):
+#             # 2이면서, 위에 1을 가진 자성체의 개수를 센다
+#             if table[y][x] == 2:
+#                 if 0 <= y-1 < leng and table[y-1][x] == 1:
+#                     ans += 1
+#     print(f'#{test_case} {ans}')
+
+# SWEA 2806
+# def dfs(n, v1, v2, v3):
+#     global ans
+#     # 끝에 도달하면 가능한 것
+#     if n == N:
+#         ans += 1
+#         return
+#     for j in range(0, N):
+#         if v1[j] == 0 and v2[n + j] == 0 and v3[n - j] == 0:
+#             v1[j] = 1
+#             v2[n + j] = 1
+#             v3[n - j] = 1
+#
+#             dfs(n + 1, v1, v2, v3)
+#
+#             v1[j] = 0
+#             v2[n + j] = 0
+#             v3[n - j] = 0
+#
+#
+# T = int(input())
+# for test_case in range(1, T + 1):
+#     N = int(input())
+#     arr = [[0] * N for _ in range(N)]
+#     ans = 0
+#
+#     v1 = [0] * N
+#     v2 = [0] * (2 * N - 1)
+#     v3 = [0] * (2 * N - 1)
+#
+#     dfs(0, v1, v2, v3)
+#
+#     print(f'#{test_case} {ans}')
+
+# SWEA 1228
+# T = 10
+# for test_case in range(1, T+1):
+#     N = int(input())
+#     origin = list(map(int, input().split()))
+#     M = int(input())
+#     data = list(input().split())
+#     cmd = []
+#     i = 0
+#     while i < len(data):
+#         if data[i] == 'I':
+#             x, y = int(data[i+1]), int(data[i+2])
+#             middle = list(map(int, data[i+3: i+3+y]))
+#             forward = origin[:x]
+#             behind = origin[x:]
+#             origin = forward + middle + behind
+#             i = i+3+y
+#             # print(x, y, middle)
+#     print(f'#{test_case}', end=' ')
+#     for i in range(10):
+#         print(origin[i], end=' ')
+#     print()
+
+# SWEA 1221
+# num_dict = dict({"ZRO" : 0, "ONE": 1, "TWO" : 2, "THR" : 3, "FOR": 4, "FIV": 5, "SIX": 6, "SVN": 7, "EGT": 8, "NIN": 9})
+#
+# T = int(input())
+# for test_case in range(1, T+1):
+#     t, N = input().split()
+#     N = int(N)
+#     data = list(input().split())
+#     num_lst = [0] * 10
+#     for i in range(N):
+#         key = data[i]
+#         num_key = num_dict[key]
+#         num_lst[num_key] += 1
+#     items = sorted(num_dict.items(), key=lambda x: x[1])
+#     print(t)
+#     for i in items:
+#         for n in range(num_lst[i[1]]):
+#             print(i[0], end=' ')
+#     print()
+
+# SWEA 1216
+# def check(lst):
+#     i, j = 0, len(lst) - 1
+#     while i <= j:
+#         if lst[i] != lst[j]:
+#             return False
+#         i += 1
+#         j -= 1
+#     return True
+#
+# T = 10
+# for test_case in range(1, T+1):
+#     t = int(input())
+#     N = 100
+#     arr = []
+#     ans = 1
+#     for i in range(N):
+#         arr.append(list(input()))
+#
+#     new = [[0] * N for _ in range(N)]
+#     for y in range(N):
+#         for x in range(N):
+#             new[y][x] = arr[x][N-y-1]
+#
+#     # 찾을 회문 길이를 100에서부터 1까지 줄여간다
+#     for leng in range(N, 1, -1):
+#         for lst in arr:
+#             for start in range(N-leng+1):
+#                 if check(lst[start:start+leng]):
+#                     ans = leng
+#                     break
+#             if ans > 1:
+#                 break
+#         if ans > 1:
+#             break
+#         for lst in new:
+#             for start in range(N-leng+1):
+#                 if check(lst[start:start+leng]):
+#                     ans = leng
+#                     break
+#             if ans > 1:
+#                 break
+#         if ans > 1:
+#             break
+#     print(f'#{t} {ans}')
+
+# SWEA 1244
+# def dfs(data, n):
+#     global ans
+#     if n == N:
+#         value = int(''.join(data))
+#         if value > ans:
+#             ans = value
+#         return
+#
+#     if ''.join(data) + str(n) in visited:
+#         return
+#
+#     visited.add(''.join(data) + str(n))
+#
+#     for i in range(len(data)):
+#         for j in range(i+1, len(data)):
+#             if data[i] == data[j]:
+#                 continue
+#             data[i], data[j] = data[j], data[i]
+#             dfs(data, n+1)
+#             data[i], data[j] = data[j], data[i]
+#
+# T = int(input())
+# for test_case in range(1, T+1):
+#     data, N = input().split()
+#     data = list(data)
+#     N = int(N)
+#
+#     ans = 0
+#     # 방문 확인
+#     visited = set()
+#
+#     dfs(data, 0)
+#
+#     print(f'#{test_case} {ans}')
+
+# SWEA 5215
+# def dfs(score, cal, start):
+#     global ans
+#     # 현재 위치가 마지막
+#     if start == N or (L - cal) < lst[start][1]:
+#         if score > ans:
+#             ans = score
+#         return
+#
+#     for i in range(start, N):
+#         if cal + lst[i][1] <= L:
+#             score += lst[i][0]
+#             cal += lst[i][1]
+#             dfs(score, cal, i+1)
+#             score -= lst[i][0]
+#             cal -= lst[i][1]
+#
+# # 이건 되고 내 코드가 안 되는 이유는 뭐지?
+# def dfs2(score, cal, start):
+#     global ans
+#     if cal > L:
+#         return
+#
+#     if start == N:
+#         if score > ans:
+#             ans = score
+#         return
+#
+#     dfs2(score, cal, start+1)
+#     dfs2(score+lst[start][0], cal+lst[start][1], start+1)
+#
+# T = int(input())
+# for test_case in range(1, T+1):
+#     N, L = map(int, input().split())
+#     ans = 0
+#     lst = []
+#     for i in range(N):
+#         # 점수 칼로리
+#         lst.append(tuple(map(int, input().split())))
+#     lst = sorted(lst, key=lambda x: -x[1])
+#     dfs2(0, 0, 0)
+#     print(f'#{test_case} {ans}')
+
+# SWEA 1240
+# T = int(input())
+# bit_dict = {'0001101': 0, '0011001': 1, '0010011': 2, '0111101': 3, '0100011': 4, '0110001': 5, '0101111': 6, '0111011': 7, '0110111': 8, '0001011': 9}
+#
+# for test_case in range(1, T+1):
+#     N, M = map(int, input().split())
+#     grid = []
+#     point = (0, 0)
+#     long_l = 56
+#     short_l = 7
+#     code = [0] * (8+1)
+#     ans = 0
+#     for _ in range(N):
+#         grid.append(list(input()))
+#
+#     for y in range(N):
+#         for x in range(M):
+#             if grid[y][x] == '1':
+#                 point = (y, x)
+#                 break
+#
+#     py, px = point
+#     lst = grid[py]
+#     for x in range(px-3, px+1):
+#         if x < 0:
+#             continue
+#         i = 1
+#         for start in range(x, x + long_l, 7):
+#             if ''.join(lst[start:start+short_l]) not in bit_dict:
+#                 break
+#             code[i] = bit_dict[''.join(lst[start:start+short_l])]
+#             i += 1
+#     # 올바른 code인지 확인
+#     a, b, ans = 0, 0, 0
+#
+#     for i in range(1, len(code), 2):
+#         a += code[i]
+#         ans += code[i]
+#     for j in range(2, len(code), 2):
+#         b += code[j]
+#         ans += code[j]
+#
+#     if (a * 3 + b) % 10 != 0:
+#         ans = 0
+#     print(f'#{test_case} {ans}')
+
+# SWEA 5203
+# T = int(input())
+# for test_case in range(1, T+1):
+#     data = list(map(int, input().split()))
+#     A = [0] * 10
+#     B = [0] * 10
+#     ans = 0
+#     for i in range(len(data)):
+#         value = data[i]
+#         if i == 0:
+#             A[value] += 1
+#
+#         elif i % 2 == 0:
+#             A[value] += 1
+#             cnt = 0
+#             for j in range(value-2, value+3):
+#                 if cnt >= 3:
+#                     break
+#                 if j < 0 or j > 9:
+#                     continue
+#                 if A[j] > 0:
+#                     cnt += 1
+#                 else:
+#                     cnt = 0
+#             if cnt >= 3:
+#                 ans = 1
+#                 break
+#         else:
+#             B[value] += 1
+#             cnt = 0
+#             for j in range(value-2, value+3):
+#                 if cnt >= 3:
+#                     break
+#                 if j < 0 or j > 9:
+#                     continue
+#                 if B[j] > 0:
+#                     cnt += 1
+#                 else:
+#                     cnt = 0
+#             if cnt >= 3:
+#                 ans = 2
+#                 break
+#         if 3 in set(A):
+#             ans = 1
+#             break
+#         elif 3 in set(B):
+#             ans = 2
+#             break
+#
+#     print(f'#{test_case} {ans}')
+
+# SWEA 3307
+
+# T = int(input())
+# for test_case in range(1, T+1):
+#     N = int(input())
+#     lst = list(map(int, input().split()))
+#     ans = 0
+#     res = [1] * N
+#     for i in range(1, N):
+#         for j in range(i):
+#             if lst[i] >= lst[j]:
+#                 res[i] = max(res[i], res[j] + 1)
+#                 if res[i] > ans:
+#                     ans = res[i]
+#
+#     print(f'#{test_case} {ans}')
+
+# SWEA 4843
+# T = int(input())
+# for test_case in range(1, T+1):
+#     N = int(input())
+#     lst = list(map(int, input().split()))
+#     leng = 10
+#
+#     lst.sort(reverse=True)
+#     i, j = 0, N-1
+#     res = [0] * leng
+#
+#     for k in range(1, leng+1):
+#         if k % 2 == 0:
+#             res[k-1] = lst[j]
+#             j -= 1
+#         else:
+#             res[k-1] = lst[i]
+#             i += 1
+#
+#     print(f'#{test_case}', end=' ')
+#     for k in range(leng):
+#         print(res[k], end=' ')
+#     print()
+
+# SWEA 1234
+
+# T = 10
+# for tc in range(1, T+1):
+#     N, lst = input().split()
+#     N = int(N)
+#     lst = list(lst)
+#
+#     i, j = 0, 1
+#     while True:
+#         if j >= len(lst):
+#             break
+#
+#         if lst[i] == lst[j]:
+#             lst = lst[:i] + lst[j+1:]
+#             i -= 1
+#             j -= 1
+#         else:
+#             i += 1
+#             j += 1
+#     ans = ''.join(lst)
+#     print(f'#{tc} {ans}')
+
+# SWEA 5208
+
+# T = int(input())
+# for tc in range(1, T+1):
+#     data = list(map(int, input().split()))
+#     N = data[0]
+#     lst = data[1:] + [0]
+#     ans = N-1
+#
+#     cnt = [N-1] * N
+#     cnt[0] = 0
+#
+#     for now in range(1, N):
+#         for i in range(now):
+#             if i + lst[i] >= now:
+#                 if cnt[i] + 1 < cnt[now]:
+#                     if now == N-1:
+#                         cnt[now] = cnt[i]
+#                     else:
+#                         cnt[now] = cnt[i] + 1
+#     # print(cnt)
+#     ans = cnt[N-1]
+#
+#     print(f'#{tc} {ans}')
+
+# SWEA 1230
+# def insert(x, y, s):
+#     global lst
+#     lst = lst[:x+1] + s + lst[x+1:]
+#
+# def delete(x, y):
+#     global lst
+#     lst = lst[:x+1] + lst[x+y+1:]
+#
+# def add(y, s):
+#     global lst
+#     lst = lst + s
+#
+# T = 10
+# for tc in range(1, T+1):
+#     N = int(input())
+#     lst = input().split()
+#     M = int(input())
+#     data = input().split()
+#     while data:
+#         if data[0] == 'I':
+#             x, y = int(data[1]), int(data[2])
+#             s = data[3:3+y]
+#             insert(x, y, s)
+#             data = data[3+y:]
+#
+#         elif data[0] == 'D':
+#             x, y = int(data[1]), int(data[2])
+#             delete(x, y)
+#             data = data[3:]
+#         else:
+#             y = int(data[1])
+#             s = data[2:2+y]
+#             add(y, s)
+#             data = data[2+y:]
+#
+#     print(f'#{tc}', end=' ')
+#     for i in range(1, 11):
+#         print(lst[i], end=' ')
+#     print()
+
+# SWEA 1206 RE
+# T = 10
+# for tc in range(1, T+1):
+#     N = int(input())
+#     lst = list(map(int, input().split()))
+#     ans = 0
+#     for i in range(2, N-2):
+#         # 이웃한 최장 찾음
+#         hst = 0
+#         for ni in range(i-2, i+3):
+#             # 자기 자신은 제외
+#             if i == ni:
+#                 continue
+#             # 다른 아파트가 더 높으면
+#             if lst[i] <= lst[ni]:
+#                 # hst에 현재 값 넣고 break
+#                 hst = lst[i]
+#                 break
+#             if hst < lst[ni]:
+#                 hst = lst[ni]
+#         ans += (lst[i] - hst)
+#     print(f'#{tc} {ans}')
+
+# SWEA 1244 RE
+# def dfs(n, a):
+#     global ans
+#     if (''.join(a), n) in visited:
+#         return
+#     visited.add((''.join(a), n))
+#
+#     # 정해진 횟수만큼 교환 진행했다면
+#     if n == N:
+#         if ans < int(''.join(a)):
+#             ans = int(''.join(a))
+#         return
+#
+#     for i in range(len(lst)-1):
+#         for j in range(i+1, len(lst)):
+#             a[i], a[j] = a[j], a[i]
+#             dfs(n+1, a)
+#             a[i], a[j] = a[j], a[i]
+#
+# T = int(input())
+# for tc in range(1, T+1):
+#     lst, N = input().split()
+#     lst = list(lst)
+#     N = int(N)
+#     visited = set()
+#     ans = 0
+#     dfs(0, lst)
+#     print(f'#{tc} {ans}')
+
+# SWEA 1208
+# T = 10
+# for tc in range(1, T+1):
+#     # 덤프 횟수
+#     N = int(input())
+#     L = 100
+#     lst = list(map(int, input().split()))
+#     lst.sort()
+#
+#     l, h = 0, L-1
+#     # 최저점의 index는 0, 최고점의 index는 L-1
+#     for _ in range(N):
+#         if lst[h] - lst[l] <= 1:
+#             break
+#         # 덤프 수행
+#         lst[h] -= 1
+#         lst[l] += 1
+#         i = l+1
+#         while lst[l] > lst[i]:
+#             lst[l], lst[i] = lst[i], lst[l]
+#             l += 1
+#             i += 1
+#         j = h - 1
+#         while lst[h] < lst[j]:
+#             lst[h], lst[j] = lst[j], lst[h]
+#             j -= 1
+#             h -= 1
+#         l, h = 0, L-1
+#     print(f'#{tc} {lst[h] - lst[l]}')
+
+# SWEA 2805
+# T = int(input())
+# for tc in range(1, T+1):
+#     N = int(input())
+#     field = []
+#     ans = 0
+#     for _ in range(N):
+#         field.append(list(map(int,list(input()))))
+#
+#
+#     mid = N // 2
+#     for y in range(N):
+#         i = mid
+#         i -= abs(y - mid)
+#         for x in range(mid-i, mid+i+1):
+#             ans += field[y][x]
+#
+#     print(f'#{tc} {ans}')
+
+# SWEA 2806 RE
+# def dfs(n):
+#     global ans
+#     if n == N:
+#         ans += 1
+#         return
+#
+#     for x in range(N):
+#         if v1[x] == 0 and v2[n+x] == 0 and v3[n-x] == 0:
+#             v1[x], v2[n+x], v3[n-x] = 1, 1, 1
+#             dfs(n+1)
+#             v1[x], v2[n+x], v3[n-x] = 0, 0, 0
+#
+# T = int(input())
+# for tc in range(1, T+1):
+#     N = int(input())
+#     ans = 0
+#     # 가로, 우상향 대각선, 좌상향 대각선
+#     v1, v2, v3 = [[0] * 2 * N for _ in range(3)]
+#     dfs(0)
+#     print(f'#{tc} {ans}')
+
+# SWEA 2806
+# def dfs(cal, score, n):
+#     global ans
+#     # 만약 제한 칼로리를 넘으면: 그냥 반환
+#     if cal > L:
+#         return
+#     # 끝까지 갔다면 확인 후 반환
+#     if n == N:
+#         if ans < score:
+#             ans = score
+#         return
+#
+#     dfs(cal, score, n+1)
+#     dfs(cal+lst[n][1], score+lst[n][0], n+1)
+#
+# T = int(input())
+# for tc in range(1, T+1):
+#     # 재료 수, 제한 칼로리
+#     N, L = map(int, input().split())
+#     lst = []
+#     ans = 0
+#     for _ in range(N):
+#         # 점수, 칼로리
+#         lst.append(tuple(map(int, input().split())))
+#     dfs(0, 0, 0)
+#     print(f'#{tc} {ans}')
+
+# BOJ - 20300
+# N = int(input())
+# A = list(map(int, input().split()))
+#
+# A.sort()
+# if N % 2 == 0:
+#     i, j = 0, N-1
+#     ans = A[i] + A[j]
+# else:
+#     i, j = 0, N-2
+#     ans = A[N-1]
+#
+# while i < j:
+#     temp = A[i] + A[j]
+#     if temp > ans:
+#         ans = temp
+#     i += 1
+#     j -= 1
+# print(ans)
+
+# BOJ - 11501
+# T = int(input())
+# for tc in range(1, T+1):
+#     N = int(input())
+#     lst = list(map(int, input().split()))
+#
+#     mx = N-1
+#     ans = 0
+#
+#     for i in range(N-1, -1, -1):
+#         if lst[i] < lst[mx]:
+#             ans += (lst[mx] - lst[i])
+#         else:
+#             mx = i
+#     print(ans)
+
+# BOJ - 16326
+# from collections import deque
+# directions = [(0, -1), (-1, 0), (1, 0), (0, 1)] # (dx, dy)상 좌 우 하
+#
+# def bfs(sx, sy, shark):
+#     global eat_lst
+#     visited = [[0] * N for _ in range(N)]
+#     visited[sy][sx] = 1
+#     q = deque()
+#     q.append((sx, sy, 0))
+#     end = float('inf')
+#     while q:
+#         cx, cy, dist = q.popleft()
+#         if dist == end:
+#             return
+#         for d in range(4):
+#             nx, ny = cx + directions[d][0], cy + directions[d][1]
+#             if 0 <= nx < N and 0 <= ny < N and not visited[ny][nx]:
+#                 # 만약 먹을 수 있는 물고기가 아니면 - 아래 로직은 새로 구현해본 건데, 제대로 작동할지
+#                 if sea[ny][nx] > shark:
+#                     continue
+#                 else:
+#                     q.append((nx, ny, dist+1))
+#                     visited[ny][nx] = 1
+#                     if 0 < sea[ny][nx] < shark:
+#                         end = dist + 1
+#                         eat_lst.append((nx, ny, dist+1))
+#
+# T = 1
+# for tc in range(1, T+1):
+#     N = int(input())
+#     sea = [[0] * N for _ in range(N)]
+#     for n in range(N):
+#         sea[n] = list(map(int, input().split()))
+#
+#     # 상어의 초기 위치 찾기
+#     s_x, s_y = -1, -1
+#     for i in range(N):
+#         for j in range(N):
+#             if sea[i][j] == 9:
+#                 s_y, s_x = i, j
+#                 break
+#         if s_x != -1:
+#             break
+#
+#     # 상어 초기 크기
+#     shark = 2
+#     ate = 0
+#     time = 0
+#
+#     # 더 이상 찾을 수 없으면 빠져나오는 while문
+#     found = True
+#     while True:
+#         if not found:
+#             break
+#         # 크기만큼 잡아먹으면 초기화하고 레벨업
+#         if ate == shark:
+#             shark += 1
+#             ate = 0
+#         # 상어를 이동시키며 모든 경로를 찾음
+#         eat_lst = []
+#         bfs(s_x, s_y, shark)
+#         # 경로 간 비교
+#         eat_lst = sorted(eat_lst, key=lambda x:(x[0], x[1]))
+#         # 물고기 잡아먹기 - 조건 만족
+#         sea[s_y][s_x] = 0
+#         s_x, s_y, dist = eat_lst[0]
+#         sea[s_y][s_x] = 9
+#         ate += 1
+#         time += 1
+#     print(f'#{tc} {time}')
+
+
+# T = int(input())
+# for tc in range(1, T+1):
+#     N, M = map(int, input().split())
+#     grid = [[0] * N for _ in range(N)]
+#     chk = [[0] * N for _ in range(N)]
+#     for i in range(N):
+#         grid[i] = list(map(int, input().split()))
+#
+#     ans = 0
+#
+#     for r in range(N):
+#         for c in range(N):
+#             temp1 = 0
+#             temp2 = 0
+#             for k in range(1, M):
+#                 if (r + k) < N:
+#                     temp1 += grid[r+k][c]
+#                     if (c + k) < N:
+#                         temp2 += grid[r+k][c+k]
+#                     if (c - k) >= 0:
+#                         temp2 += grid[r+k][c-k]
+#                 if (c + k) < N:
+#                     temp1 += grid[r][c+k]
+#                 if (r - k) >= 0:
+#                     temp1 += grid[r-k][c]
+#                     if (c + k) < N:
+#                         temp2 += grid[r-k][c+k]
+#                     if (c - k) >= 0:
+#                         temp2 += grid[r-k][c-k]
+#                 if (c - k) >= 0:
+#                     temp1 += grid[r][c-k]
+#
+#             temp1 += grid[r][c]
+#             temp2 += grid[r][c]
+#             if ans < temp1:
+#                 ans = temp1
+#             elif ans < temp2:
+#                 ans = temp2
+#
+#     print(f'#{tc} {ans}')
+
+# # SWEA
+# # 회전 함수
+# def rotate(x, y):
+#     for r in range(N):
+#         for c in range(N):
+#             y[c][N-1-r] = x[r][c]
+#     return y
+#
+# T = int(input())
+#
+# for tc in range(1, T+1):
+#     N = int(input())
+#     org = [[0] * N for _ in range(N)]
+#     rotate90 = [[0] * N for _ in range(N)]
+#     rotate180 = [[0] * N for _ in range(N)]
+#     rotate270 = [[0] * N for _ in range(N)]
+#     for i in range(N):
+#         org[i] = list(map(int, input().split()))
+#
+#     rotate90 = rotate(org, rotate90)
+#     rotate180 = rotate(rotate90, rotate180)
+#     rotate270 = rotate(rotate180, rotate270)
+#
+#     print(f'#{tc}')
+#     for i in range(N):
+#         print(''.join(map(str, rotate90[i])), end=' ')
+#         print(''.join(map(str, rotate180[i])), end=' ')
+#         print(''.join(map(str, rotate270[i])), end=' ')
+#         print()
+
+# SWEA - Preschool
+
+# T = int(input())
+# for tc in range(1, T+1):
+#     N, M = map(int, input().split())
+#     Ai = list(map(int, input().split()))
+#     Bj = list(map(int, input().split()))
+#
+#     ans = 0
+#
+#     # N과 M이 같을 때
+#     if N == M:
+#         for k in range(N):
+#             ans += Ai[k] * Bj[k]
+#
+#     if N > M:
+#         for start in range(N-M+1):
+#             temp = 0
+#             for k in range(M):
+#                 temp += Ai[start + k] * Bj[k]
+#             if temp > ans:
+#                 ans = temp
+#
+#     if N < M:
+#         for start in range(M-N+1):
+#             temp = 0
+#             for k in range(N):
+#                 temp += Ai[k] * Bj[start + k]
+#             if temp > ans:
+#                 ans = temp
+#     print(f'#{tc} {ans}')
+
+'''
+N개의 수로 이루어진 수열 A_1, A_2, ..., A_N이 주어짐
+수와 수 사이에 끼워넣을 수 있는 N-1개의 연산자
+- 우선 순위 무시, 앞에서부터 진행
+- 나눗셈은 정수 나눗셈으로, 몫만 취함
+만들 수 있는 식의 결과가 최대인 것과 최소인 것
+
+앞에서부터 연산을 해야하며, 연산자의 개수도 정해져있음 -> 재귀 형식으로 풀자
+'''
+
+# 함수: 최종 순서가 정해지면 앞에서부터 연산을 수행함
+visited = set()
+
+def f(idx, s, m, t, d, res):
+    global res_max, res_min
+    # 만약 이미 조회한 적이 있다면 return
+    if (s, m, t, d, res) in visited:
+        return
+    if idx == N:
+        res_max = max(res_max, res)
+        res_min = min(res_min, res)
+        return
+    visited.add((s, m, t, d))
+    # 그렇지 않다면 앞에서부터 연산을 수행함
+    # idx는 1부터 시작해야 하며, res는 기본 A_list[0]
+    if s > 0:
+        # 덧셈이 있을 경우
+        f(idx+1, s-1, m, t, d, res+A_list[idx])
+    if m > 0:
+        # 뺄셈이 남아있을 경우
+        f(idx+1, s, m-1, t, d, res-A_list[idx])
+    if t > 0:
+        # 곱셈이 남아있을 경우
+        f(idx+1, s, m, t-1, d, res*A_list[idx])
+    if d > 0:
+        # 나눗셈이 남아있을 경우
+        f(idx+1, s, m, t, d-1, res//A_list[idx])
+
+
+N = int(input())
+A_list = list(map(int, input().split()))
+res_max = -10**(13)
+res_min = 10**(13)
+# 각 연산자의 수를 아래와 같이 나눔
+s, m, t, d = list(map(int, input().split()))
+f(1, s, m, t, d, A_list[0])
+print(res_max)
+print(res_min)
