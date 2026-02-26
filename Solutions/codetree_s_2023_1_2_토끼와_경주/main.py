@@ -22,6 +22,8 @@ import heapq
 rabbits_info = dict()
 # 토끼들의 점수
 rabbits_score = dict()
+# 토끼들의 전체 점수
+total_sum = 0
 N, M, P = 0, 0, 0
 
 # 순서 별로 중요하지 않음 - 부딪혀서 반대 방향으로 갈 수도 있기 때문에
@@ -77,12 +79,16 @@ def init(command):
 # 4. 고유번호가 큰 토끼
 
 def start_race(command):
+    global total_sum
     """
     200 K S
     """
     K, S = map(int, command[1:3])
     # 점프할 토끼 우선순위 위한 heap
     jump_heap = []
+    # 최종 점수 추가해줄 토끼 구하기 위한 set
+    jumped_rabbits = set()
+    best_rabbit_of_round = (-1, -1, -1, -1) # (r+c, r, c, pid)
     # 초기화
     for pid in rabbits_info.keys():
         # (jump_cnt, r+c, r, c, pid)
@@ -93,6 +99,8 @@ def start_race(command):
     for i in range(K):
         # 우선순위가 높은 토끼를 멀리 보내줌
         now_j, now_rc, now_r, now_c, pid_i, d_i = heapq.heappop(jump_heap)
+        # 점프 토끼
+        jumped_rabbits.add(pid_i)
         turn_heap = []
 
         nxt_dir = 0
@@ -110,6 +118,7 @@ def start_race(command):
             d_i는 d_i % (2 * (N-1)) 또는 d_i % (2 * (M-1)) 으로 줄여서 계산할 수 있음
             이렇게 줄어든 거리만큼만 시뮬레이션!
             '''
+            '''
             # 줄어든 거리만큼을 steps라는 변수에 담음
             steps = 0
             # 세로 이동일 경우(행 이동 - N)
@@ -122,6 +131,8 @@ def start_race(command):
             step_num = 0
             step_d = d
             nr, nc = now_r, now_c
+            
+            # 직접 모든 경과를 보는 작업
             while step_num < steps:
                 tr, tc = nr + directions[step_d][0], nc + directions[step_d][1]
 
@@ -135,6 +146,15 @@ def start_race(command):
                 # 방향만 바꿔주고 넘김
                 else:
                     step_d = (step_d + 2) % 4
+            '''
+            # 만약 증가하는 방향으로 간다면, 더해주면 됨
+            # 만약 감소하는 방향으로 간다면, 빼주면 됨
+            cr, cc = now_r, now_c
+            nr, nc = now_r, now_c
+            if d == 0:  # 증가 방향, 행 이동
+                cr -= 1
+
+
 
             # 종료 후 토끼 이동 위치 우선순위 반영하기 위해서
             heapq.heappush(turn_heap, (-(nr + nc), -nr, -nc, d))
@@ -143,35 +163,36 @@ def start_race(command):
         nxt_r, nxt_c, nxt_dir = (-nxt_r, -nxt_c, -nxt_dir)
 
         # 점수 반영
-        for key in rabbits_score:
-            if key != pid_i:
-                rabbits_score[key] += (nxt_r + nxt_c)
+        total_sum += (nxt_r + nxt_c)
+        rabbits_score[pid_i] -= (nxt_r + nxt_c)
+
 
         # 토끼를 이동 - 전체 info
         rabbits_info[pid_i] = (d_i, nxt_r, nxt_c)
 
         # 토끼의 점프 결과를 반영해서, 추가로 넣어줌
         heapq.heappush(jump_heap, (now_j+1, nxt_r+nxt_c, nxt_r, nxt_c, pid_i, d_i))
+        # 점프 토끼 정보 갱신
+        current_rabbit_info = (nxt_r+nxt_c, nxt_r, nxt_c, pid_i)
+        if current_rabbit_info > best_rabbit_of_round:
+            best_rabbit_of_round = current_rabbit_info
 
         # 점수가 누적되어야 한다!
 
-        print(i)
         # test print
-        for key in rabbits_info.keys():
-            print(f"{key}: {rabbits_info[key]}")
-            print(f"score:::{key}: {rabbits_score[key]}")
+        # for key in rabbits_info.keys():
+        #     print(f"{key}: {rabbits_info[key]}")
+        #     print(f"score:::{key}: {rabbits_score[key]}")
 
     # 추가 점수를 주기 위함
-    pid_add = 0
-    while jump_heap:
-        now_j, now_rc, now_r, now_c, pid_add, d_i = heapq.heappop(jump_heap)
-    rabbits_score[pid_add] += S
+    if best_rabbit_of_round[3] != -1:
+        rabbits_score[best_rabbit_of_round[3]] += S
 
     # test print
-    print('add')
-    for key in rabbits_info.keys():
-        print(f"{key}: {rabbits_info[key]}")
-        print(f"score:::{key}: {rabbits_score[key]}")
+    # print('add')
+    # for key in rabbits_info.keys():
+    #     print(f"{key}: {rabbits_info[key]}")
+    #     print(f"score:::{key}: {rabbits_score[key]}")
 
 def change_dist(command):
     pid, L = map(int, command[1:3])
@@ -179,11 +200,12 @@ def change_dist(command):
     rabbits_info[pid] = (L*d, r, c)
 
 def best_member(command):
+    global total_sum
     best_score = 0
     for rabbit in rabbits_score:
         if rabbits_score[rabbit] > best_score:
             best_score = rabbits_score[rabbit]
-    return best_score
+    return total_sum + best_score
 
 Q = int(input())
 
