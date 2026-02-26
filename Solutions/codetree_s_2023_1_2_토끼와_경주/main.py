@@ -100,39 +100,43 @@ def start_race(command):
         nxt_c = 0
         # 토끼를 4개의 방향으로 이동시킴 - 이동 중에 더 크면 한 칸
         for d in range(4):
-            nr, nc = now_r + directions[d][0] * d_i, now_c + directions[d][1] * d_i
-            # 만약 이동 중에 더 크면, 한 칸을 뒤로 보내야 함
-            # 그럼 이동해야 하는 칸 - 앞으로 남아있는 칸
+            # 이동 중에 범위를 벗어나면, 반대 방향으로 한 칸 이동함
+            # (이동 칸 수 - 벽까지 남은 횟수) / M 연산을 수행하고, 그 값의 홀/짝 유무에 따라서 방향을 정함
+            # 몫(quo)이 0 or 짝수이면: 기존 방향 & 홀수이면: 반대 방향으로 이동
+            # 나머지 rem 값이 적으면, 특정 방향에서 반대 방향으로 rem 칸 이동
+            # => 안 됨!
+            '''
+            해설 참고
+            d_i는 d_i % (2 * (N-1)) 또는 d_i % (2 * (M-1)) 으로 줄여서 계산할 수 있음
+            이렇게 줄어든 거리만큼만 시뮬레이션!
+            '''
+            # 줄어든 거리만큼을 steps라는 변수에 담음
+            steps = 0
+            # 세로 이동일 경우(행 이동 - N)
+            if d % 2 == 0:
+                steps = d_i % (2 * (N-1))
+            else:
+                steps = d_i % (2 * (M-1))
+            # 움직인 횟수와 방향을 정함
+            # print(steps)
+            step_num = 0
+            step_d = d
+            nr, nc = now_r, now_c
+            while step_num < steps:
+                tr, tc = nr + directions[step_d][0], nc + directions[step_d][1]
 
-            # d_i - (N - now_r) or d_i - (M - now_c)
-            # d_i - now_r or d_i - now_c
-            if nr <= 0 or nr > N or nc <= 0 or nc > M:
-                if d == 0:
-                    to_move = d_i - (N - now_r)
-                    if to_move % 2 == 0:
-                        nr = N
-                    else:
-                        nr = N-1
-                elif d == 1:
-                    to_move = d_i - (M - now_c)
-                    if to_move % 2 == 0:
-                        nc = M
-                    else:
-                        nc = M-1
-                elif d == 2:
-                    to_move = d_i - now_r
-                    if to_move % 2 == 0:
-                        nr = 1
-                    else:
-                        nr = 2
+                # 이렇게 한 번을 움직이고 나면,
+                # 만약 범위 내에 있다면
+                if 1 <= tr <= N and 1 <= tc <= M:
+                    # 횟수를 1 증가
+                    nr, nc = tr, tc
+                    step_num += 1
+                # 범위 내에 있지 않다면 - 반대 방향으로 움직여야 함
+                # 방향만 바꿔주고 넘김
                 else:
-                    to_move = d_i - now_c
-                    if to_move % 2 == 0:
-                        nc = 1
-                    else:
-                        nc = 2
+                    step_d = (step_d + 2) % 4
 
-
+            # 종료 후 토끼 이동 위치 우선순위 반영하기 위해서
             heapq.heappush(turn_heap, (-(nr + nc), -nr, -nc, d))
         X, nxt_r, nxt_c, nxt_dir = heapq.heappop(turn_heap)
         # 최대heap 사용으로 인한 - 변환
