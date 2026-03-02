@@ -46,7 +46,7 @@ def init(command):
         idx = 4 + (p * 2)
         # 고유번호, 거리
         pid_i, d_i = map(int, command[idx:idx+2])
-        rabbits_info[pid_i] = (d_i, 1, 1)
+        rabbits_info[pid_i] = (d_i, 1, 1, 0)    # pid_i: (d_i, r, c, jump)
         # 점수 초기화
         rabbits_score[pid_i] = 0
         p += 1
@@ -92,8 +92,8 @@ def start_race(command):
     # 초기화
     for pid in rabbits_info.keys():
         # (jump_cnt, r+c, r, c, pid)
-        d, r, c = rabbits_info[pid]
-        heapq.heappush(jump_heap, (0, r+c, r, c, pid, d))
+        d, r, c, j = rabbits_info[pid]
+        heapq.heappush(jump_heap, (j, r+c, r, c, pid, d))
         
 
     for i in range(K):
@@ -149,11 +149,61 @@ def start_race(command):
             '''
             # 만약 증가하는 방향으로 간다면, 더해주면 됨
             # 만약 감소하는 방향으로 간다면, 빼주면 됨
+            '''
             cr, cc = now_r, now_c
             nr, nc = now_r, now_c
-            if d == 0:  # 증가 방향, 행 이동
+            # 행, 열 이동
+            if d % 2 == 0:  # 증가 방향, 행 이동
+                # 1. 0-based로 변경
                 cr -= 1
+                dist = d_i % (2 * (N-1))
+                # 2. step 구함 -> 이동 위치
+                if dist < N:
+                    step = dist
+                else:
+                    step = (2 * (N-1)) - dist
+                # 3. 증가 방향, 감소 방향 분기
+                if d == 0:
+                    nr = cr + step + 1
+                else:
+                    nr = cr - step + 1
+            else:
+                cc -= 1
+                dist = d_i % (2 * (M-1))
 
+                if dist < M:
+                    step = dist
+                else:
+                    step = (2 * (M-1)) - dist
+                # 3. 증가 방향, 감소 방향 분기
+                if d == 1:
+                    nc = cc + step + 1
+                else:
+                    nc = cc - step + 1
+            '''
+            nr, nc = now_r, now_c
+            if d % 2 == 0:  # 행간 이동
+                # 반복되는 주기를 구함
+                L = N - 1
+                cycle = 2 * L
+                # (now_r - 1): 0-based로 변경
+                # 현재 위치를 반영해서 target 위치를 구함
+                target = (now_r - 1 + (d_i if d == 0 else -d_i)) % cycle
+
+                if target < N:
+                    nr = target + 1
+                else:
+                    nr = (cycle - target) + 1
+
+            else:
+                L = M - 1
+                cycle = 2 * L
+                target = (now_c - 1 + (d_i if d == 1 else -d_i)) % cycle
+
+                if target < M:
+                    nc = target + 1
+                else:
+                    nc = (cycle - target) + 1
 
 
             # 종료 후 토끼 이동 위치 우선순위 반영하기 위해서
@@ -168,7 +218,7 @@ def start_race(command):
 
 
         # 토끼를 이동 - 전체 info
-        rabbits_info[pid_i] = (d_i, nxt_r, nxt_c)
+        rabbits_info[pid_i] = (d_i, nxt_r, nxt_c, now_j+1)
 
         # 토끼의 점프 결과를 반영해서, 추가로 넣어줌
         heapq.heappush(jump_heap, (now_j+1, nxt_r+nxt_c, nxt_r, nxt_c, pid_i, d_i))
@@ -196,8 +246,8 @@ def start_race(command):
 
 def change_dist(command):
     pid, L = map(int, command[1:3])
-    d, r, c = rabbits_info[pid]
-    rabbits_info[pid] = (L*d, r, c)
+    d, r, c, j = rabbits_info[pid]
+    rabbits_info[pid] = (L*d, r, c, j)
 
 def best_member(command):
     global total_sum
