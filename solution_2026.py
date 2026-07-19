@@ -164,14 +164,110 @@ eraseWord(mId)
 '''
 모든 벌꿀을 살피면서, 값이 최대가 되는 경우를 찾자 -> 일단 전체 탐색
 '''
-T = int(input())
-for tc in range(1, T+1):
-    N, M, C = map(int, input().split())
+# T = int(input())
+# for tc in range(1, T+1):
+#     N, M, C = map(int, input().split())
     
-    grid = []
-    for i in range(N):
-        row = list(map(int, input().split()))
-        grid.append(row)
-    print(grid)
+#     grid = []
+#     for i in range(N):
+#         row = list(map(int, input().split()))
+#         grid.append(row)
+#     print(grid)
 
     # N-1만큼 돌면 됨 -> 다른 것도!!!
+
+# def solution(sizes):
+#     mi, ma = 1, 1
+#     for r, c in sizes:
+#         if r < c:
+#             if mi < r:
+#                 mi = r
+#             if ma < c:
+#                 ma = c
+#         elif c < r:
+#             if mi < c:
+#                 mi = c
+#             if ma < r:
+#                 ma = r
+#         else:
+#             if mi < c:
+#                 mi = c
+#             if ma < r:
+#                 ma = r
+#     answer = mi * ma
+#     return answer
+
+# 26-07-19
+# def solution(answers):
+#     N = 5
+#     L = len(answers)
+
+#     first = [i for i in range(1, N+1)]
+#     second = []
+#     for i in (1, 3, 4, 5):
+#         second += [2]
+#         second += [i]
+#     third = []
+#     for i in (3, 1, 2, 4, 5):
+#         third += [i] * 2
+    
+#     L_f = len(first)
+#     L_s = len(second)
+#     L_t = len(third)
+
+#     scores = [0, 0, 0]
+
+#     for i in range(L):
+#         if answers[i] == first[i%L_f]:
+#             scores[0] += 1
+#         if answers[i] == second[i%L_s]:
+#             scores[1] += 1
+#         if answers[i] == third[i%L_t]:
+#             scores[2] += 1
+    
+#     answer = []
+#     maximum = 0
+#     for i in range(3):
+#         if scores[i] > maximum:
+#             maximum = scores[i]
+    
+#     for j in range(3):
+#         if scores[j] == maximum:
+#             answer.append(j+1)
+
+#     return answer
+
+from itertools import permutations
+
+def solution(numbers):
+    L = len(numbers)
+    answer = 0
+    visited = set()
+    # 1. 모든 조합으로 수를 만들어야 함
+    # 1) 조합으로 문자열을 만들어야 함
+    for i in range(1, L+1):
+        combinations_list = []
+        for comb in permutations(numbers, i):
+            # 2) 문자열을 수로 만들어야 함
+            num = int("".join(map(str, comb)))
+            if num not in visited:
+                combinations_list.append(num)
+                visited.add(num)
+        # 2. 각 조합의 수에 대한 소수 판별이 필요함
+        for number in combinations_list:
+            # 1) 일단 1이 아니어야 함   
+            if number <= 1:
+                continue
+            # 2) 1 말고는 나누어지는 수가 없어야 함
+            else:
+                flag = True
+                for j in range(2, number):
+                    if number % j == 0:
+                        flag = False
+                        break
+                if flag:
+                    answer += 1
+    return answer
+
+if __name__ == '__main__':
+    print(solution("011"))
