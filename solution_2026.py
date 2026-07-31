@@ -237,37 +237,232 @@ eraseWord(mId)
 
 #     return answer
 
-from itertools import permutations
+# from itertools import permutations
+#
+# def solution(numbers):
+#     L = len(numbers)
+#     answer = 0
+#     visited = set()
+#     # 1. 모든 조합으로 수를 만들어야 함
+#     # 1) 조합으로 문자열을 만들어야 함
+#     for i in range(1, L+1):
+#         combinations_list = []
+#         for comb in permutations(numbers, i):
+#             # 2) 문자열을 수로 만들어야 함
+#             num = int("".join(map(str, comb)))
+#             if num not in visited:
+#                 combinations_list.append(num)
+#                 visited.add(num)
+#         # 2. 각 조합의 수에 대한 소수 판별이 필요함
+#         for number in combinations_list:
+#             # 1) 일단 1이 아니어야 함
+#             if number <= 1:
+#                 continue
+#             # 2) 1 말고는 나누어지는 수가 없어야 함
+#             else:
+#                 flag = True
+#                 for j in range(2, number):
+#                     if number % j == 0:
+#                         flag = False
+#                         break
+#                 if flag:
+#                     answer += 1
+#     return answer
+#
+# if __name__ == '__main__':
+#     print(solution("011"))
 
-def solution(numbers):
-    L = len(numbers)
-    answer = 0
-    visited = set()
-    # 1. 모든 조합으로 수를 만들어야 함
-    # 1) 조합으로 문자열을 만들어야 함
-    for i in range(1, L+1):
-        combinations_list = []
-        for comb in permutations(numbers, i):
-            # 2) 문자열을 수로 만들어야 함
-            num = int("".join(map(str, comb)))
-            if num not in visited:
-                combinations_list.append(num)
-                visited.add(num)
-        # 2. 각 조합의 수에 대한 소수 판별이 필요함
-        for number in combinations_list:
-            # 1) 일단 1이 아니어야 함   
-            if number <= 1:
+'''
+# 정올 - 4520 햄버거 분배
+# (사람 - 햄버거) 거리 <= k : 섭취 가능
+# - 최대 5명이 햄버거 섭취 가능
+# 배열을 왼쪽부터 오른쪽으로 훑으며, 사람을 먼저 발견
+# 가장 아쉬운 햄버거부터 먹자!
+# 맨 처음 발견된 사람 입장에서는: 탐색범위(현재 위치 - k, 현재 위치 + k)
+# 왜? 내 왼쪽 햄버거는 내가 먹지 않으면, 나보다 오른쪽 사람들은 먹을 수 없음
+# input
+n, k = map(int, input().split())
+table = input()
+eaten = set()
+result = 0
+
+for i in range(n):
+    # 사람을 발견하면
+    if table[i] == 'P':
+        # 사람의 왼쪽 끝 ~ 오른쪽 끝까지 탐색
+        for j in range(i-k, i+k+1):
+            if j < 0 or j >= n:
                 continue
-            # 2) 1 말고는 나누어지는 수가 없어야 함
-            else:
-                flag = True
-                for j in range(2, number):
-                    if number % j == 0:
-                        flag = False
-                        break
-                if flag:
-                    answer += 1
-    return answer
+            # 햄버거를 발견하면
+            if table[j] == 'H' and j not in eaten:
+                # 1. 햄버거 먹었음을 표시
+                eaten.add(j)
+                # 2. result 1 증가
+                result += 1
+                # 3. 햄버거 하나 먹었으므로 탐색 X, break
+                break
 
-if __name__ == '__main__':
-    print(solution("011"))
+print(result)
+'''
+
+# # 정올 1695 단지번호붙이기
+# # 1은 집이 있음 / 0은 집이 없음
+# # 연결된 집들의 모임인 단지를 정의 / 단지에 번호
+# # 집이 연결됨: 좌우, 아래위로 다른 집이 있는 경우
+#
+# n = int(input())
+# grid = []
+# for Y in range(n):
+#     grid.append(list(map(int, str.strip(input()))))
+#
+# directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+# # 각 단지별 집의 개수를 오름차순 저장할 우선순위 큐
+# import heapq
+# group = 0
+# numbers = []
+# visited = [[0] * n for _ in range(n)]
+#
+# def dfs(y, x):
+#     # 1 depth 들어왔음을 표시
+#     number = 1
+#     for d in range(4):
+#         ny, nx = y + directions[d][0], x + directions[d][1]
+#         if 0 <= ny < n and 0 <= nx < n:
+#             if grid[ny][nx] == 1 and not visited[ny][nx]:
+#                 visited[ny][nx] = 1
+#                 # dfs 빠져나오면서 적어도 1 depth 들어갔다 나옴
+#                 number += dfs(ny, nx)
+#     return number
+#
+# # 맨 왼쪽 위부터 우측 아래로
+# for y in range(n):
+#     for x in range(n):
+#         if grid[y][x] == 1 and visited[y][x] == 0:
+#             group += 1
+#             visited[y][x] = 1
+#             heapq.heappush(numbers, dfs(y, x))
+# print(group)
+# for i in range(group):
+#     print(heapq.heappop(numbers))
+
+# 정올 - 1335 색종이 만들기
+# 주어진 종이를 일정한 규칙에 따라 잘라서, 다양한 크기를 가진 정사각형 모양의 하얀색, 파란색 색종이
+# 하얀색 색종이와 파란색 색종이 개수
+# 만약 정사각형 내부가 모두 같은 색상이 아니라면, N/2로 가로, 세로를 자름
+# N은 (2, 4, 8, 16, 64, 128 중 하나)
+
+# 분할정복 - 큰 문제를 풀기 위해서 그 문제를 작은 문제로 쪼개는 것
+# 처음에는 N에서부터 시작
+# 2^0 까지...
+# // 2를 해서, 다음 함수로 들어감
+# 전수조사 -> 만약 발견되면 다음으로
+# 발견 안 되면 돌아옴
+# 현재 범위의 작은 범위를 찾을 수 있도록 유도해야 함
+# N = int(input())
+# grid = []
+# for Y in range(N):
+#     grid.append(list(map(int, input().split())))
+#
+# blue = 0
+# white = 0
+#
+# def search(v, sr, sc, n):
+#     global blue, white
+#     flag = True
+#     # 만약 N이 1이면 1을 반환하고 종료
+#     if N == 1:
+#         if v == 0:
+#             white += 1
+#         else:
+#             blue += 1
+#         return
+#
+#     # v는 값이고 r, c는 좌표
+#     # 반복하면서 -> 탐색 후 값이 다른 것이 있다면 depth 추가
+#     for r in range(sr, sr + n):
+#         for c in range(sc, sc + n):
+#             if grid[r][c] != v:
+#                 flag = False
+#                 dist = n//2
+#                 search(grid[sr][sc], sr, sc, dist)  # 2사분면
+#                 search(grid[sr+dist][sc], sr+dist, sc, dist)   # 3사분면
+#                 search(grid[sr][sc+dist], sr, sc+dist, dist)   # 1사분면
+#                 search(grid[sr+dist][sc+dist], sr+dist, sc+dist, dist)  # 4사분면
+#                 return
+#     if flag:
+#         if v == 0:
+#             white += 1
+#         else:
+#             blue += 1
+#     return
+#
+# search(grid[0][0], 0, 0, N)
+# print(white)
+# print(blue)
+
+# 정올 1370 회의실 배정
+
+# import heapq
+#
+# N = int(input())
+# q = []
+# last_end_time = 0
+# meeting_numbers = 0
+# results = []
+#
+# for i in range(N):
+#     num, start, end = map(int, input().split())
+#     heapq.heappush(q, (end, start, num))
+#
+# while q:
+#     end, start, num = heapq.heappop(q)
+#     # 만약 이미 회의가 있는 시간대라면
+#     if start >= last_end_time:
+#         results.append(num)
+#         meeting_numbers += 1
+#         last_end_time = end
+#     else:
+#         continue
+#
+# print(meeting_numbers)
+# print(*results)
+
+# 정올 5170 나무꾼 미르코
+# M미터 이상의 나무를 가져가기 위해서 절단기에 설정할 수 있는 높이의 최댓값
+# 나무의 수 N, 벌목해야 하는 나무 길이 최솟값 M
+
+# 절단기 높이를 result로 둔다
+# 이진탐색 -> for문 돌며 1씩 뺌
+# 이진탐색: logN, for문: N
+
+# 만약 제일 높은 나무에 대해서
+# 이진탐색 수행 -> for문에서 key값을 빼봄
+# 만약 만족하면 -> OK
+# 만약 만족하지 않으면: 부족하면 큰쪽 / 넘치면 많은쪽
+# 넘치는 건 저장해두고, 만약 다음 턴에서 부족해지면 -> 최신값 반환
+result = 0
+
+def binary_search(start, end):
+    global M, result
+    if end <= start:
+        return
+    key = (end + start) // 2
+    get = 0
+    for tree in trees:
+        get += max(tree - key, 0)
+    if get > M:
+        result = key
+        binary_search(key+1, end)
+    elif get < M:
+        binary_search(start, key)
+    else:
+        result = key
+        return
+
+N, M = map(int, input().split())
+trees = list(map(int, input().split()))
+
+trees.sort()
+highest = trees[-1]
+binary_search(0, highest)
+print(result)
