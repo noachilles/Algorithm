@@ -440,29 +440,80 @@ print(result)
 # 만약 만족하면 -> OK
 # 만약 만족하지 않으면: 부족하면 큰쪽 / 넘치면 많은쪽
 # 넘치는 건 저장해두고, 만약 다음 턴에서 부족해지면 -> 최신값 반환
+# result = 0
+#
+# def binary_search(start, end):
+#     global M, result
+#     if end <= start:
+#         return
+#     key = (end + start) // 2
+#     get = 0
+#     for tree in trees:
+#         get += max(tree - key, 0)
+#     if get > M:
+#         result = key
+#         binary_search(key+1, end)
+#     elif get < M:
+#         binary_search(start, key)
+#     else:
+#         result = key
+#         return
+#
+# N, M = map(int, input().split())
+# trees = list(map(int, input().split()))
+#
+# trees.sort()
+# highest = trees[-1]
+# binary_search(0, highest)
+# print(result)
+
+# 1078 저글링 방사능 오염
+from collections import deque
+
+# 구하는 것1: 최소 몇 초가 걸리는지 - 사망까지 3초
 result = 0
+# 구하는 것2: 남아있는 저글링 수
+numbers = 0
 
-def binary_search(start, end):
-    global M, result
-    if end <= start:
-        return
-    key = (end + start) // 2
-    get = 0
-    for tree in trees:
-        get += max(tree - key, 0)
-    if get > M:
-        result = key
-        binary_search(key+1, end)
-    elif get < M:
-        binary_search(start, key)
-    else:
-        result = key
-        return
+# 입력
+M, N = map(int, input().split())
+grid = []
+for r in range(N):
+    grid.append(list(map(int, input().strip())))
+# 1은 저글링 O, 0은 저글링 X
+# 방사능 오염 가하는 위치가 열, 행(x, y)순
+# x, y 좌표의 시작은 1
+x, y = map(int, input().split())
+x -= 1
+y -= 1
 
-N, M = map(int, input().split())
-trees = list(map(int, input().split()))
+for r in range(N):
+    for c in range(M):
+        if grid[r][c]:
+           numbers += 1
 
-trees.sort()
-highest = trees[-1]
-binary_search(0, highest)
+directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+# bfs로 저글링들에게 하나씩 감염을 시킴
+# 처음 시작은 3부터 하고, 마지막 업데이트를 결과로 반환
+# 시작점 세팅
+q = deque()
+q.append((y, x, 3))
+visited = [[0] * M for _ in range(N)]
+visited[y][x] = 1
+numbers -= 1
+
+while q:
+    cy, cx, time = q.popleft()
+    result = time
+    for d in range(4):
+        ny, nx = cy + directions[d][0], cx + directions[d][1]
+        if ny < 0 or ny >= N or nx < 0 or nx >= M:
+            continue
+        if visited[ny][nx] == 0 and grid[ny][nx]:
+            visited[ny][nx] = 1
+            numbers -= 1
+            # 1을 더함
+            q.append((ny, nx, time+1))
+# ---
 print(result)
+print(numbers)
